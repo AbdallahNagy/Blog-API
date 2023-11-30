@@ -1,0 +1,28 @@
+D:\dotnet stack\dotnet projects\DAL.Blog\bin\Debug\net7.0\Blog.DAL.deps.json
+D:\dotnet stack\dotnet projects\DAL.Blog\bin\Debug\net7.0\Blog.DAL.dll
+D:\dotnet stack\dotnet projects\DAL.Blog\bin\Debug\net7.0\Blog.DAL.pdb
+D:\dotnet stack\dotnet projects\DAL.Blog\obj\Debug\net7.0\Blog.DAL.csproj.AssemblyReference.cache
+D:\dotnet stack\dotnet projects\DAL.Blog\obj\Debug\net7.0\Blog.DAL.GeneratedMSBuildEditorConfig.editorconfig
+D:\dotnet stack\dotnet projects\DAL.Blog\obj\Debug\net7.0\Blog.DAL.AssemblyInfoInputs.cache
+D:\dotnet stack\dotnet projects\DAL.Blog\obj\Debug\net7.0\Blog.DAL.AssemblyInfo.cs
+D:\dotnet stack\dotnet projects\DAL.Blog\obj\Debug\net7.0\Blog.DAL.csproj.CoreCompileInputs.cache
+D:\dotnet stack\dotnet projects\DAL.Blog\obj\Debug\net7.0\Blog.DAL.dll
+D:\dotnet stack\dotnet projects\DAL.Blog\obj\Debug\net7.0\refint\Blog.DAL.dll
+D:\dotnet stack\dotnet projects\DAL.Blog\obj\Debug\net7.0\Blog.DAL.pdb
+D:\dotnet stack\dotnet projects\DAL.Blog\obj\Debug\net7.0\ref\Blog.DAL.dll
+D:\dotnet stack\dotnet projects\DAL.Blog\bin\Debug\net7.0\Blog.DAL.runtimeconfig.json
+D:\dotnet stack\dotnet projects\DAL.Blog\obj\Debug\net7.0\Blog.DAL.genruntimeconfig.cache
+D:\dotnet stack\dotnet projects\Blog API\DAL.Blog\bin\Debug\net7.0\Blog.DAL.deps.json
+D:\dotnet stack\dotnet projects\Blog API\DAL.Blog\bin\Debug\net7.0\Blog.DAL.runtimeconfig.json
+D:\dotnet stack\dotnet projects\Blog API\DAL.Blog\bin\Debug\net7.0\Blog.DAL.dll
+D:\dotnet stack\dotnet projects\Blog API\DAL.Blog\bin\Debug\net7.0\Blog.DAL.pdb
+D:\dotnet stack\dotnet projects\Blog API\DAL.Blog\obj\Debug\net7.0\Blog.DAL.csproj.AssemblyReference.cache
+D:\dotnet stack\dotnet projects\Blog API\DAL.Blog\obj\Debug\net7.0\Blog.DAL.GeneratedMSBuildEditorConfig.editorconfig
+D:\dotnet stack\dotnet projects\Blog API\DAL.Blog\obj\Debug\net7.0\Blog.DAL.AssemblyInfoInputs.cache
+D:\dotnet stack\dotnet projects\Blog API\DAL.Blog\obj\Debug\net7.0\Blog.DAL.AssemblyInfo.cs
+D:\dotnet stack\dotnet projects\Blog API\DAL.Blog\obj\Debug\net7.0\Blog.DAL.csproj.CoreCompileInputs.cache
+D:\dotnet stack\dotnet projects\Blog API\DAL.Blog\obj\Debug\net7.0\Blog.DAL.dll
+D:\dotnet stack\dotnet projects\Blog API\DAL.Blog\obj\Debug\net7.0\refint\Blog.DAL.dll
+D:\dotnet stack\dotnet projects\Blog API\DAL.Blog\obj\Debug\net7.0\Blog.DAL.pdb
+D:\dotnet stack\dotnet projects\Blog API\DAL.Blog\obj\Debug\net7.0\Blog.DAL.genruntimeconfig.cache
+D:\dotnet stack\dotnet projects\Blog API\DAL.Blog\obj\Debug\net7.0\ref\Blog.DAL.dll

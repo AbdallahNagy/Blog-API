@@ -1,0 +1,30 @@
+D:\dotnet stack\dotnet projects\BL.Blog\bin\Debug\net7.0\Blog.BL.deps.json
+D:\dotnet stack\dotnet projects\BL.Blog\bin\Debug\net7.0\Blog.BL.dll
+D:\dotnet stack\dotnet projects\BL.Blog\bin\Debug\net7.0\Blog.BL.pdb
+D:\dotnet stack\dotnet projects\BL.Blog\bin\Debug\net7.0\Blog.DAL.dll
+D:\dotnet stack\dotnet projects\BL.Blog\bin\Debug\net7.0\Blog.DAL.pdb
+D:\dotnet stack\dotnet projects\BL.Blog\obj\Debug\net7.0\Blog.BL.csproj.AssemblyReference.cache
+D:\dotnet stack\dotnet projects\BL.Blog\obj\Debug\net7.0\Blog.BL.GeneratedMSBuildEditorConfig.editorconfig
+D:\dotnet stack\dotnet projects\BL.Blog\obj\Debug\net7.0\Blog.BL.AssemblyInfoInputs.cache
+D:\dotnet stack\dotnet projects\BL.Blog\obj\Debug\net7.0\Blog.BL.AssemblyInfo.cs
+D:\dotnet stack\dotnet projects\BL.Blog\obj\Debug\net7.0\Blog.BL.csproj.CoreCompileInputs.cache
+D:\dotnet stack\dotnet projects\BL.Blog\obj\Debug\net7.0\Blog.BL.csproj.CopyComplete
+D:\dotnet stack\dotnet projects\BL.Blog\obj\Debug\net7.0\Blog.BL.dll
+D:\dotnet stack\dotnet projects\BL.Blog\obj\Debug\net7.0\refint\Blog.BL.dll
+D:\dotnet stack\dotnet projects\BL.Blog\obj\Debug\net7.0\Blog.BL.pdb
+D:\dotnet stack\dotnet projects\BL.Blog\obj\Debug\net7.0\ref\Blog.BL.dll
+D:\dotnet stack\dotnet projects\Blog API\BL.Blog\bin\Debug\net7.0\Blog.BL.deps.json
+D:\dotnet stack\dotnet projects\Blog API\BL.Blog\bin\Debug\net7.0\Blog.BL.dll
+D:\dotnet stack\dotnet projects\Blog API\BL.Blog\bin\Debug\net7.0\Blog.BL.pdb
+D:\dotnet stack\dotnet projects\Blog API\BL.Blog\bin\Debug\net7.0\Blog.DAL.dll
+D:\dotnet stack\dotnet projects\Blog API\BL.Blog\bin\Debug\net7.0\Blog.DAL.pdb
+D:\dotnet stack\dotnet projects\Blog API\BL.Blog\obj\Debug\net7.0\Blog.BL.csproj.AssemblyReference.cache
+D:\dotnet stack\dotnet projects\Blog API\BL.Blog\obj\Debug\net7.0\Blog.BL.GeneratedMSBuildEditorConfig.editorconfig
+D:\dotnet stack\dotnet projects\Blog API\BL.Blog\obj\Debug\net7.0\Blog.BL.AssemblyInfoInputs.cache
+D:\dotnet stack\dotnet projects\Blog API\BL.Blog\obj\Debug\net7.0\Blog.BL.AssemblyInfo.cs
+D:\dotnet stack\dotnet projects\Blog API\BL.Blog\obj\Debug\net7.0\Blog.BL.csproj.CoreCompileInputs.cache
+D:\dotnet stack\dotnet projects\Blog API\BL.Blog\obj\Debug\net7.0\Blog.BL.csproj.CopyComplete
+D:\dotnet stack\dotnet projects\Blog API\BL.Blog\obj\Debug\net7.0\Blog.BL.dll
+D:\dotnet stack\dotnet projects\Blog API\BL.Blog\obj\Debug\net7.0\refint\Blog.BL.dll
+D:\dotnet stack\dotnet projects\Blog API\BL.Blog\obj\Debug\net7.0\Blog.BL.pdb
+D:\dotnet stack\dotnet projects\Blog API\BL.Blog\obj\Debug\net7.0\ref\Blog.BL.dll
