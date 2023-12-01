@@ -14,7 +14,7 @@ public interface IPostManager
     Task<ReadPostDTO?> GetById(int id);
     Task<ReadPostDTO> Add(WritePostDTO post);
     Task<ReadPostDTO> Update(UpdatePostDTO post, int id);
-    Task<int> Delete(int id);
+    Task Delete(int id);
     Task<List<ReadPostDTO>?> SearchByTags(int[] tagsIds);
     Task<List<ReadPostDTO>?> SearchByText(string str);
     Task<List<ReadPostDTO>?> SearchInTitle(string str);

@@ -24,39 +24,50 @@ public class PostManager : IPostManager
     private readonly IPostRepo _postRepo;
     private readonly ITagRepo _tagRepo;
     private readonly IPostTagRepo _postTagRepo;
-    private readonly BlogDbContext _context;
 
-    public PostManager(IPostRepo postRepo, ITagRepo tagRepo, IPostTagRepo postsTags, BlogDbContext context)
+    public PostManager(IPostRepo postRepo, ITagRepo tagRepo, IPostTagRepo postsTags)
     {
         _postRepo = postRepo;
         _tagRepo = tagRepo;
         _postTagRepo = postsTags;
-        _context = context;
     }
 
     async public Task<List<ReadPostDTO>?> GetAll()
     {
-        var posts = await _postRepo.GetAll() ?? throw new BusinessException(204, "No posts available");
+        try
+        {
+            var posts = await _postRepo.GetAll() ?? throw new BusinessException(204, "No posts available");
 
-        List<ReadPostDTO> readPosts = posts
-            .Select(post =>
-                new ReadPostDTO(
-                    post.Id,
-                    post.Title,
-                    post.Body,
-                    post.Likes,
-                    post.AuthorId,
-                    post.CreatedAt)).ToList();
+            List<ReadPostDTO> readPosts = posts
+                .Select(post =>
+                    new ReadPostDTO(
+                        post.Id,
+                        post.Title,
+                        post.Body,
+                        post.Likes,
+                        post.AuthorId,
+                        post.CreatedAt)).ToList();
 
-        return readPosts;
+            return readPosts;
+        }
+        catch (Exception)
+        {
+            throw new BusinessException(500, "Interal Server Error");
+        }
     }
 
     async public Task<ReadPostDTO?> GetById(int id)
     {
-        var post = await _postRepo.Get(id) ?? throw new BusinessException(204, "Can't find post by this id");
-        ReadPostDTO readPost = new(post.Id, post.Title, post.Body, post.Likes, post.AuthorId, post.CreatedAt);
-
-        return readPost;
+        try
+        {
+            var post = await _postRepo.Get(id) ?? throw new BusinessException(204, "Can't find post by this id");
+            ReadPostDTO readPost = new(post.Id, post.Title, post.Body, post.Likes, post.AuthorId, post.CreatedAt);
+            return readPost;
+        }
+        catch (Exception)
+        {
+            throw new BusinessException(500, "Interal Server Error");
+        }
     }
 
     async public Task<ReadPostDTO> Add(WritePostDTO writePost)
@@ -69,7 +80,7 @@ public class PostManager : IPostManager
             Likes = 0,
         };
 
-        var tags = writePost.Tags.Select(t => new Tag { Name = t.Name });
+        var tags = writePost.Tags.Select(t => new Tag { Name = t.Name }).ToArray();
 
         try
         {
@@ -78,10 +89,6 @@ public class PostManager : IPostManager
 
             await _tagRepo.AddRange(tags);
             await _tagRepo.SaveChanges();
-            await _postRepo.SaveChanges();
-
-            Console.Out.WriteLine("tag1 id: " + tags.ToList()[0].Id);
-            Console.Out.WriteLine("post id: " + addedPost.Id);
 
             var postsTagsWrite = tags.Select(t => new WritePostTagsDTO(addedPost.Id, t.Id));
             var postsTags = postsTagsWrite.Select(p => new PostsTags
@@ -99,16 +106,25 @@ public class PostManager : IPostManager
         {
             throw new BusinessException(400, "ReferenceConstraintException: Can't assign post to non-existing user");
         }
+        catch(Exception)
+        {
+            throw new BusinessException(500, "Interal Server Error");
+        }
     }
 
-    async public Task<int> Delete(int id)
+    async public Task Delete(int id)
     {
-        // 1 for success, 0 for record doesn't exist
-        var result = await _postRepo.Delete(id);
-        if (result == 0) throw new BusinessException(204, "Record doesn't exist");
-        await _postRepo.SaveChanges();
-
-        return result;
+        try
+        {
+            // 1 for success, 0 for record doesn't exist
+            var result = await _postRepo.Delete(id);
+            if (result == 0) throw new BusinessException(204, "Record doesn't exist");
+            await _postRepo.SaveChanges();
+        }
+        catch (Exception)
+        {
+            throw new BusinessException(500, "Interal Server Error");
+        }
     }
 
     async public Task<ReadPostDTO> Update(UpdatePostDTO updatePost, int id)
@@ -120,45 +136,80 @@ public class PostManager : IPostManager
             Body = updatePost.Body,
         };
 
-        var updatedPost = await _postRepo.Update(id, post) ?? throw new BusinessException(404, "Can't find record by the provided id");
-        await _postRepo.SaveChanges();
-        return new ReadPostDTO(updatedPost.Id, updatedPost.Title, updatedPost.Body, updatedPost.Likes, updatedPost.AuthorId, updatedPost.CreatedAt);
+        try
+        {
+            var updatedPost = await _postRepo.Update(id, post) ?? throw new BusinessException(404, "Can't find record by the provided id");
+            await _postRepo.SaveChanges();
+            return new ReadPostDTO(updatedPost.Id, updatedPost.Title, updatedPost.Body, updatedPost.Likes, updatedPost.AuthorId, updatedPost.CreatedAt);
+        }
+        catch (Exception)
+        {
+            throw new BusinessException(500, "Interal Server Error");
+        }
     }
 
     async public Task<List<ReadPostDTO>?> SearchByTags(int[] tagsIds)
     {
-        List<Post> posts = await _postRepo.SearchByTags(tagsIds) 
-            ?? throw new BusinessException(204, "No posts available by this filter");
+        try
+        {
+            List<Post> posts = await _postRepo.SearchByTags(tagsIds)
+                ?? throw new BusinessException(204, "No posts available by this filter");
 
-        List<ReadPostDTO> readPosts = posts.Select(post => new ReadPostDTO(
-            post.Id, 
-            post.Title, 
-            post.Body,
-            post.Likes, 
-            post.AuthorId, 
-            post.CreatedAt)).ToList();
+            List<ReadPostDTO> readPosts = posts.Select(post => new ReadPostDTO(
+                post.Id,
+                post.Title,
+                post.Body,
+                post.Likes,
+                post.AuthorId,
+                post.CreatedAt)).ToList();
 
-        return readPosts;
+            return readPosts;
+        }
+        catch (Exception)
+        {
+            throw new BusinessException(500, "Interal Server Error");
+        }
     }
 
     async public Task<List<ReadPostDTO>?> SearchByText(string str)
     {
-        List<Post> posts = await _postRepo.SearchByText(str) ?? throw new BusinessException(204, "No posts available by this filter");
-        List<ReadPostDTO> readPosts = posts.Select(post => new ReadPostDTO(post.Id, post.Title, post.Body, post.Likes, post.AuthorId, post.CreatedAt)).ToList();
-        return readPosts;
+        try
+        {
+            List<Post> posts = await _postRepo.SearchByText(str) ?? throw new BusinessException(204, "No posts available by this filter");
+            List<ReadPostDTO> readPosts = posts.Select(post => new ReadPostDTO(post.Id, post.Title, post.Body, post.Likes, post.AuthorId, post.CreatedAt)).ToList();
+            return readPosts;
+        }
+        catch (Exception)
+        {
+            throw new BusinessException(500, "Interal Server Error");
+        }
     }
 
     async public Task<List<ReadPostDTO>?> SearchInBody(string str)
     {
-        List<Post> posts = await _postRepo.SearchInBody(str) ?? throw new BusinessException(204, "No posts available by this filter");
-        List<ReadPostDTO> readPosts = posts.Select(post => new ReadPostDTO(post.Id, post.Title, post.Body, post.Likes, post.AuthorId, post.CreatedAt)).ToList();
-        return readPosts;
+        try
+        {
+            List<Post> posts = await _postRepo.SearchInBody(str) ?? throw new BusinessException(204, "No posts available by this filter");
+            List<ReadPostDTO> readPosts = posts.Select(post => new ReadPostDTO(post.Id, post.Title, post.Body, post.Likes, post.AuthorId, post.CreatedAt)).ToList();
+            return readPosts;
+        }
+        catch (Exception)
+        {
+            throw new BusinessException(500, "Interal Server Error");
+        }
     }
 
     async public Task<List<ReadPostDTO>?> SearchInTitle(string str)
     {
-        List<Post> posts = await _postRepo.SearchInTitle(str) ?? throw new BusinessException(204, "No posts available by this filter");
-        List<ReadPostDTO> readPosts = posts.Select(post => new ReadPostDTO(post.Id, post.Title, post.Body, post.Likes, post.AuthorId, post.CreatedAt)).ToList();
-        return readPosts;
+        try
+        {
+            List<Post> posts = await _postRepo.SearchInTitle(str) ?? throw new BusinessException(204, "No posts available by this filter");
+            List<ReadPostDTO> readPosts = posts.Select(post => new ReadPostDTO(post.Id, post.Title, post.Body, post.Likes, post.AuthorId, post.CreatedAt)).ToList();
+            return readPosts;
+        }
+        catch (Exception)
+        {
+            throw new BusinessException(500, "Interal Server Error");
+        }
     }
 }
