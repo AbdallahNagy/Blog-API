@@ -13,7 +13,7 @@ public class PostRepo : GenericRepo<Post>, IPostRepo
         _context = context;
     }
 
-    public List<Post?> SearchByTags(int[] tagsIds)
+    async public Task<List<Post?>?> SearchByTags(int[] tagsIds)
     {
         return _context.Set<PostsTags>()
             .Where(postTag => tagsIds.Contains(postTag.TagId))
@@ -21,7 +21,7 @@ public class PostRepo : GenericRepo<Post>, IPostRepo
             .ToList();
     }
 
-    public List<Post> SearchByText(string str)
+    async public Task<List<Post>?> SearchByText(string str)
     {
         return _context.Set<Post>()
             .Where(post => post.Title!.Contains(str) || post.Body!.Contains(str))
@@ -29,7 +29,7 @@ public class PostRepo : GenericRepo<Post>, IPostRepo
             .ToList();
     }
 
-    public List<Post> SearchInTitle(string str)
+    async public Task<List<Post>?> SearchInTitle(string str)
     {
         return _context.Set<Post>()
             .Where(post => post.Title!.Contains(str))
@@ -37,7 +37,7 @@ public class PostRepo : GenericRepo<Post>, IPostRepo
             .ToList();
     }
 
-    public List<Post> SearchInBody(string str)
+    async public Task<List<Post>?> SearchInBody(string str)
     {
         return _context.Set<Post>()
             .Where(post => post.Body!.Contains(str))

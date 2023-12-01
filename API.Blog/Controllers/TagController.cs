@@ -20,13 +20,6 @@ namespace Blog.API.Controllers
             return Ok(Posts);
         }
 
-        [HttpGet]
-        [Route("{id}")]
-        public ActionResult<Post> Get(int id)
-        {
-            return Ok(Posts[id]);
-        }
-
         [HttpPost]
         public ActionResult<Post> Post(Post post)
         {

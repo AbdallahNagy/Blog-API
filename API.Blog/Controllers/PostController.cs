@@ -18,7 +18,7 @@ public class PostController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<ReadPostDTO>?> GetAll(
+    async public Task<ActionResult<IEnumerable<ReadPostDTO>?>> GetAll(
         [FromQuery] string title = "",
         [FromQuery] string body = "",
         [FromQuery] string text = ""
@@ -28,7 +28,7 @@ public class PostController : ControllerBase
         {
             try
             {
-                var posts = _postManager.SearchInTitle(title);
+                var posts = await _postManager.SearchInTitle(title);
                 return posts;
             }
             catch (BusinessException ex)
@@ -44,7 +44,7 @@ public class PostController : ControllerBase
         {
             try
             {
-                var posts = _postManager.SearchInBody(body);
+                var posts = await _postManager.SearchInBody(body);
                 return posts;
             }
             catch (BusinessException ex)
@@ -61,7 +61,7 @@ public class PostController : ControllerBase
             try
             {
                 // searches by text in title and body
-                var posts = _postManager.SearchByText(text);
+                var posts = await _postManager.SearchByText(text);
                 return posts;
             }
             catch (BusinessException ex)
@@ -78,7 +78,7 @@ public class PostController : ControllerBase
             try
             {
                 // searches by text in title and body
-                var posts = _postManager.GetAll();
+                var posts = await _postManager.GetAll();
                 return posts;
             }
             catch (BusinessException ex)
@@ -94,11 +94,11 @@ public class PostController : ControllerBase
 
     [HttpGet]
     [Route("{id}")]
-    public ActionResult<ReadPostDTO?> Get(int id)
+    async public Task<ActionResult<ReadPostDTO?>> Get(int id)
     {
         try
         {
-            var post = _postManager.GetById(id);
+            var post = await _postManager.GetById(id);
             return post;
         }
         catch (BusinessException ex)
@@ -112,11 +112,11 @@ public class PostController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult<ReadPostDTO> Post(WritePostDTO post)
+    async public Task<ActionResult<ReadPostDTO>> Post([FromBody] WritePostDTO post)
     {
         try
         {
-            var addedPost = _postManager.Add(post);
+            var addedPost = await _postManager.Add(post);
             return addedPost;
         }
         catch (BusinessException ex)
@@ -131,11 +131,11 @@ public class PostController : ControllerBase
 
     [HttpPatch]
     [Route("{id}")]
-    public ActionResult<ReadPostDTO> Patch([FromBody] UpdatePostDTO post, int id)
+    async public Task<ActionResult<ReadPostDTO>> Patch([FromBody] UpdatePostDTO post, int id)
     {
         try
         {
-            var updatedPost = _postManager.Update(post, id);
+            var updatedPost = await _postManager.Update(post, id);
             return updatedPost;
         }
         catch (BusinessException ex)
@@ -150,11 +150,11 @@ public class PostController : ControllerBase
 
     [HttpDelete]
     [Route("{id}")]
-    public ActionResult Delete(int id)
+    async public Task<ActionResult> Delete(int id)
     {
         try
         {
-            _postManager.Delete(id);
+            await _postManager.Delete(id);
             return Ok();
         }
         catch (BusinessException ex)

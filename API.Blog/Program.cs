@@ -1,6 +1,7 @@
 using Blog.BL.Managers.Posts;
 using Blog.DAL.Context;
 using Blog.DAL.Repos.Posts;
+using Blog.DAL.Repos.PostTag;
 using Blog.DAL.Repos.Tags;
 using Blog.DAL.Repos.Users;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,8 @@ builder.Services.AddDbContext<BlogDbContext>(options => options.UseSqlServer(con
 builder.Services.AddScoped<IPostRepo, PostRepo>();
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<ITagRepo, TagRepo>();
+builder.Services.AddScoped<IPostTagRepo, PostTagRepo>();
+
 
 // Managers Registration
 builder.Services.AddScoped<IPostManager, PostManager>();

@@ -4,9 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Blog.BL.Managers.Tags;
+namespace Blog.BL.DTOs.PostTags;
 
-public interface ITagManager
-{
-
-}
+public record ReadPostTagsDTO(int PostId, int TagId);

@@ -8,16 +8,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Blog.BL.Managers.Posts;
-
 public interface IPostManager
 {
-    List<ReadPostDTO>? GetAll();
-    ReadPostDTO? GetById(int id);
-    ReadPostDTO Add(WritePostDTO post);
-    ReadPostDTO Update(UpdatePostDTO post, int id);
-    int Delete(int id);
-    List<ReadPostDTO>? SearchByTags(int[] tagsIds);
-    List<ReadPostDTO>? SearchByText(string str);
-    List<ReadPostDTO>? SearchInTitle(string str);
-    List<ReadPostDTO>? SearchInBody(string str);
+    Task<List<ReadPostDTO>?> GetAll();
+    Task<ReadPostDTO?> GetById(int id);
+    Task<ReadPostDTO> Add(WritePostDTO post);
+    Task<ReadPostDTO> Update(UpdatePostDTO post, int id);
+    Task<int> Delete(int id);
+    Task<List<ReadPostDTO>?> SearchByTags(int[] tagsIds);
+    Task<List<ReadPostDTO>?> SearchByText(string str);
+    Task<List<ReadPostDTO>?> SearchInTitle(string str);
+    Task<List<ReadPostDTO>?> SearchInBody(string str);
 }

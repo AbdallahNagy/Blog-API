@@ -10,29 +10,33 @@ public class GenericRepo<T> : IGenericRepo<T> where T : class
     {
         _context = context;
     }
-    public List<T> GetAll()
+    async public Task<List<T>> GetAll()
     {
-        return _context.Set<T>().AsNoTracking().ToList();
+        return await _context.Set<T>().AsNoTracking().ToListAsync();
     }
-    public T? Get(int id)
+    async public Task<T?> Get(int id)
     {
-        return _context.Set<T>().Find(id);
+        return await _context.Set<T>().FindAsync(id);
     }
-    public T Add(T entity)
+    async public Task<T> Add(T entity)
     {
-        _context.Set<T>().Add(entity);
+        await _context.Set<T>().AddAsync(entity);
         return entity;
     }
-    public int Delete(int id)
+    async public Task AddRange(IEnumerable<T> entities) 
     {
-        var entity = _context.Set<T>().Find(id);
+        await _context.Set<T>().AddRangeAsync(entities);
+    }
+    async public Task<int> Delete(int id)
+    {
+        var entity = await _context.Set<T>().FindAsync(id);
         if (entity == null) return 0;
         _context.Set<T>().Remove(entity);
         return 1;
     }
-    public T? Update(int id, T entity)
+    async public Task<T?> Update(int id, T entity)
     {
-        var existingEntity = _context.Set<T>().Find(id);
+        var existingEntity = await _context.Set<T>().FindAsync(id);
 
         if (existingEntity == null) return null;
 
@@ -40,8 +44,8 @@ public class GenericRepo<T> : IGenericRepo<T> where T : class
         _context.Set<T>().Update(entity);
         return entity;
     }
-    public int SaveChanges()
+    async public Task<int> SaveChanges()
     {
-        return _context.SaveChanges();
+        return await _context.SaveChangesAsync();
     }
 }
