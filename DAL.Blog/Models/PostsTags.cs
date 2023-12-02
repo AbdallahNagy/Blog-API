@@ -11,4 +11,5 @@ public class PostsTags
     public Post? Post { get; set; }
     public int TagId { get; set; }
     public Tag? Tag { get; set; }
+    public IEnumerable<PostsTags> PostTags { get; set; } = new HashSet<PostsTags>();
 }

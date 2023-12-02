@@ -15,4 +15,5 @@ public class Post
 
     [Column(TypeName = "datetime2")]
     public DateTime CreatedAt { get; set; }
+    public IEnumerable<PostsTags> PostsTags { get; set; } = new HashSet<PostsTags>();
 }

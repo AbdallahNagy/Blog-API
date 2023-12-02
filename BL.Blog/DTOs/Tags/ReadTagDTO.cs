@@ -5,4 +5,4 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Blog.BL.DTOs.Tags;
-public record ReadTagDTO(int Id, string? Name);
+public record ReadTagDTO(int Id, string? Name, DateTime CreatedAt);

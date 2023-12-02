@@ -1,5 +1,6 @@
 ﻿using Blog.BL.DTOs.Posts;
 using Blog.BL.DTOs.PostTags;
+using Blog.BL.DTOs.Tags;
 using Blog.BL.Exception_Handling;
 using Blog.DAL.Context;
 using Blog.DAL.Models;
@@ -36,7 +37,8 @@ public class PostManager : IPostManager
     {
         try
         {
-            var posts = await _postRepo.GetAll() ?? throw new BusinessException(204, "No posts available");
+            var posts = await _postRepo.GetAll() 
+                ?? throw new BusinessException(204, "No posts available");
 
             List<ReadPostDTO> readPosts = posts
                 .Select(post =>
@@ -46,7 +48,15 @@ public class PostManager : IPostManager
                         post.Body,
                         post.Likes,
                         post.AuthorId,
-                        post.CreatedAt)).ToList();
+                        post.CreatedAt,
+                        post.PostsTags
+                            .Select(pt => pt.Tag)
+                            .Select(t => new ReadTagDTO(
+                                t?.Id ?? 0, 
+                                t?.Name ?? "", 
+                                t?.CreatedAt ?? DateTime.MinValue))
+                            .ToList()
+                        )).ToList();
 
             return readPosts;
         }
@@ -61,7 +71,20 @@ public class PostManager : IPostManager
         try
         {
             var post = await _postRepo.Get(id) ?? throw new BusinessException(204, "Can't find post by this id");
-            ReadPostDTO readPost = new(post.Id, post.Title, post.Body, post.Likes, post.AuthorId, post.CreatedAt);
+
+            ReadPostDTO readPost = new(
+                post.Id, 
+                post.Title, 
+                post.Body, 
+                post.Likes, 
+                post.AuthorId, 
+                post.CreatedAt,
+                post.PostsTags
+                    .Select(pt => pt.Tag)
+                    .Select(t => new ReadTagDTO(
+                        t?.Id ?? 0,
+                        t?.Name ?? "",
+                        t?.CreatedAt ?? DateTime.MinValue)));
             return readPost;
         }
         catch (Exception)
@@ -100,7 +123,19 @@ public class PostManager : IPostManager
             await _postTagRepo.AddRange(postsTags);
             await _postTagRepo.SaveChanges();
 
-            return new ReadPostDTO(addedPost.Id, addedPost.Title, addedPost.Body, addedPost.Likes, addedPost.AuthorId, addedPost.CreatedAt);
+            return new ReadPostDTO(
+                addedPost.Id,
+                addedPost.Title,
+                addedPost.Body, 
+                addedPost.Likes, 
+                addedPost.AuthorId, 
+                addedPost.CreatedAt,
+                post.PostsTags
+                    .Select(pt => pt.Tag)
+                    .Select(t => new ReadTagDTO(
+                        t?.Id ?? 0,
+                        t?.Name ?? "",
+                        t?.CreatedAt ?? DateTime.MinValue)));
         }
         catch (ReferenceConstraintException)
         {
@@ -140,7 +175,19 @@ public class PostManager : IPostManager
         {
             var updatedPost = await _postRepo.Update(id, post) ?? throw new BusinessException(404, "Can't find record by the provided id");
             await _postRepo.SaveChanges();
-            return new ReadPostDTO(updatedPost.Id, updatedPost.Title, updatedPost.Body, updatedPost.Likes, updatedPost.AuthorId, updatedPost.CreatedAt);
+            return new ReadPostDTO(
+                updatedPost.Id,
+                updatedPost.Title,
+                updatedPost.Body,
+                updatedPost.Likes,
+                updatedPost.AuthorId,
+                updatedPost.CreatedAt,
+                post.PostsTags
+                    .Select(pt => pt.Tag)
+                    .Select(t => new ReadTagDTO(
+                        t?.Id ?? 0,
+                        t?.Name ?? "",
+                        t?.CreatedAt ?? DateTime.MinValue)));
         }
         catch (Exception)
         {
@@ -161,7 +208,13 @@ public class PostManager : IPostManager
                 post.Body,
                 post.Likes,
                 post.AuthorId,
-                post.CreatedAt)).ToList();
+                post.CreatedAt,
+                post.PostsTags
+                    .Select(pt => pt.Tag)
+                    .Select(t => new ReadTagDTO(
+                        t?.Id ?? 0,
+                        t?.Name ?? "",
+                        t?.CreatedAt ?? DateTime.MinValue)))).ToList();
 
             return readPosts;
         }
@@ -176,7 +229,20 @@ public class PostManager : IPostManager
         try
         {
             List<Post> posts = await _postRepo.SearchByText(str) ?? throw new BusinessException(204, "No posts available by this filter");
-            List<ReadPostDTO> readPosts = posts.Select(post => new ReadPostDTO(post.Id, post.Title, post.Body, post.Likes, post.AuthorId, post.CreatedAt)).ToList();
+            List<ReadPostDTO> readPosts = posts.Select(post => new ReadPostDTO(
+                post.Id, 
+                post.Title, 
+                post.Body, 
+                post.Likes, 
+                post.AuthorId, 
+                post.CreatedAt,
+                post.PostsTags
+                    .Select(pt => pt.Tag)
+                    .Select(t => new ReadTagDTO(
+                        t?.Id ?? 0,
+                        t?.Name ?? "",
+                        t?.CreatedAt ?? DateTime.MinValue)))).ToList();
+
             return readPosts;
         }
         catch (Exception)
@@ -190,7 +256,20 @@ public class PostManager : IPostManager
         try
         {
             List<Post> posts = await _postRepo.SearchInBody(str) ?? throw new BusinessException(204, "No posts available by this filter");
-            List<ReadPostDTO> readPosts = posts.Select(post => new ReadPostDTO(post.Id, post.Title, post.Body, post.Likes, post.AuthorId, post.CreatedAt)).ToList();
+            List<ReadPostDTO> readPosts = posts.Select(post => new ReadPostDTO(
+                post.Id,
+                post.Title,
+                post.Body,
+                post.Likes,
+                post.AuthorId,
+                post.CreatedAt,
+                post.PostsTags
+                    .Select(pt => pt.Tag)
+                    .Select(t => new ReadTagDTO(
+                        t?.Id ?? 0,
+                        t?.Name ?? "",
+                        t?.CreatedAt ?? DateTime.MinValue)))).ToList();
+
             return readPosts;
         }
         catch (Exception)
@@ -204,7 +283,20 @@ public class PostManager : IPostManager
         try
         {
             List<Post> posts = await _postRepo.SearchInTitle(str) ?? throw new BusinessException(204, "No posts available by this filter");
-            List<ReadPostDTO> readPosts = posts.Select(post => new ReadPostDTO(post.Id, post.Title, post.Body, post.Likes, post.AuthorId, post.CreatedAt)).ToList();
+            List<ReadPostDTO> readPosts = posts.Select(post => new ReadPostDTO(
+                post.Id,
+                post.Title,
+                post.Body,
+                post.Likes,
+                post.AuthorId,
+                post.CreatedAt,
+                post.PostsTags
+                    .Select(pt => pt.Tag)
+                    .Select(t => new ReadTagDTO(
+                        t?.Id ?? 0,
+                        t?.Name ?? "",
+                        t?.CreatedAt ?? DateTime.MinValue)))).ToList();
+
             return readPosts;
         }
         catch (Exception)

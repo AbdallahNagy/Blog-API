@@ -13,35 +13,52 @@ public class PostRepo : GenericRepo<Post>, IPostRepo
         _context = context;
     }
 
+    override async public Task<List<Post>?> GetAll()
+    {
+        return await _context.Set<Post>()
+            .Include(p => p.PostsTags)
+            .ThenInclude(pt => pt.Tag)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    override async public Task<Post?> Get(int id)
+    {
+        return await _context.Set<Post>()
+            .Include(p => p.PostsTags)
+            .ThenInclude(pt => pt.Tag)
+            .FirstOrDefaultAsync(p => p.Id == id);
+    }
+
     async public Task<List<Post?>?> SearchByTags(int[] tagsIds)
     {
-        return _context.Set<PostsTags>()
+        return await _context.Set<PostsTags>()
             .Where(postTag => tagsIds.Contains(postTag.TagId))
             .Select(postTag => postTag.Post)
-            .ToList();
+            .ToListAsync();
     }
 
     async public Task<List<Post>?> SearchByText(string str)
     {
-        return _context.Set<Post>()
+        return await _context.Set<Post>()
             .Where(post => post.Title!.Contains(str) || post.Body!.Contains(str))
             .AsNoTracking()
-            .ToList();
+            .ToListAsync();
     }
 
     async public Task<List<Post>?> SearchInTitle(string str)
     {
-        return _context.Set<Post>()
+        return await _context.Set<Post>()
             .Where(post => post.Title!.Contains(str))
             .AsNoTracking()
-            .ToList();
+            .ToListAsync();
     }
 
     async public Task<List<Post>?> SearchInBody(string str)
     {
-        return _context.Set<Post>()
+        return await _context.Set<Post>()
             .Where(post => post.Body!.Contains(str))
             .AsNoTracking()
-            .ToList();
+            .ToListAsync();
     }
 }

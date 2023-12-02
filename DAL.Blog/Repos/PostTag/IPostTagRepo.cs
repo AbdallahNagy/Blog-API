@@ -10,5 +10,5 @@ namespace Blog.DAL.Repos.PostTag;
 
 public interface IPostTagRepo : IGenericRepo<PostsTags>
 {
-
+    
 }

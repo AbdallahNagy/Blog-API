@@ -35,10 +35,6 @@ public class PostController : ControllerBase
             {
                 return StatusCode(ex.StatusCode, ex.Message);
             }
-            catch (Exception)
-            {
-                return StatusCode(500, "Internal Server Error");
-            }
         }
         else if (body != "")
         {
@@ -50,10 +46,6 @@ public class PostController : ControllerBase
             catch (BusinessException ex)
             {
                 return StatusCode(ex.StatusCode, ex.Message);
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, "Internal Server Error");
             }
         }
         else if (text != "")
@@ -68,10 +60,6 @@ public class PostController : ControllerBase
             {
                 return StatusCode(ex.StatusCode, ex.Message);
             }
-            catch (Exception)
-            {
-                return StatusCode(500, "Internal Server Error");
-            }
         }
         else
         {
@@ -84,10 +72,6 @@ public class PostController : ControllerBase
             catch (BusinessException ex)
             {
                 return StatusCode(ex.StatusCode, ex.Message);
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, "Internal Server Error");
             }
         }
     }
@@ -105,10 +89,6 @@ public class PostController : ControllerBase
         {
             return StatusCode(ex.StatusCode, ex.Message);
         }
-        catch (Exception)
-        {
-            return StatusCode(500, "Internal Server Error");
-        }
     }
 
     [HttpPost]
@@ -122,10 +102,6 @@ public class PostController : ControllerBase
         catch (BusinessException ex)
         {
             return StatusCode(ex.StatusCode, ex.Message);
-        }
-        catch (Exception)
-        {
-            return StatusCode(500, "Internal Server Error");
         }
     }
 
@@ -142,10 +118,6 @@ public class PostController : ControllerBase
         {
             return StatusCode(ex.StatusCode, ex.Message);
         }
-        catch (Exception)
-        {
-            return StatusCode(500, "Internal Server Error");
-        }
     }
 
     [HttpDelete]
@@ -160,10 +132,6 @@ public class PostController : ControllerBase
         catch (BusinessException ex)
         {
             return StatusCode(ex.StatusCode, ex.Message);
-        }
-        catch (Exception)
-        {
-            return StatusCode(500, "Internal Server Error");
         }
     }
 }
