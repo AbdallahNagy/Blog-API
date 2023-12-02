@@ -37,7 +37,7 @@ public class PostManager : IPostManager
     {
         try
         {
-            var posts = await _postRepo.GetAll() 
+            var posts = await _postRepo.GetAll()
                 ?? throw new BusinessException(204, "No posts available");
 
             List<ReadPostDTO> readPosts = posts
@@ -59,6 +59,10 @@ public class PostManager : IPostManager
                         )).ToList();
 
             return readPosts;
+        }
+        catch(BusinessException)
+        {
+            throw new BusinessException(204, "No posts available");
         }
         catch (Exception)
         {
@@ -86,6 +90,10 @@ public class PostManager : IPostManager
                         t?.Name ?? "",
                         t?.CreatedAt ?? DateTime.MinValue)));
             return readPost;
+        }
+        catch(BusinessException)
+        {
+            throw new BusinessException(204, "Can't find post by this id");
         }
         catch (Exception)
         {
@@ -156,7 +164,11 @@ public class PostManager : IPostManager
             if (result == 0) throw new BusinessException(204, "Record doesn't exist");
             await _postRepo.SaveChanges();
         }
-        catch (Exception)
+        catch (BusinessException)
+        {
+            throw new BusinessException(204, "Record doesn't exist");
+        }
+        catch(Exception)
         {
             throw new BusinessException(500, "Interal Server Error");
         }
@@ -189,6 +201,10 @@ public class PostManager : IPostManager
                         t?.Name ?? "",
                         t?.CreatedAt ?? DateTime.MinValue)));
         }
+        catch(BusinessException)
+        {
+            throw new BusinessException(404, "Can't find record by the provided id");
+        }
         catch (Exception)
         {
             throw new BusinessException(500, "Interal Server Error");
@@ -199,7 +215,7 @@ public class PostManager : IPostManager
     {
         try
         {
-            List<Post> posts = await _postRepo.SearchByTags(tagsIds)
+            var posts = await _postRepo.SearchByTags(tagsIds)
                 ?? throw new BusinessException(204, "No posts available by this filter");
 
             List<ReadPostDTO> readPosts = posts.Select(post => new ReadPostDTO(
@@ -217,6 +233,10 @@ public class PostManager : IPostManager
                         t?.CreatedAt ?? DateTime.MinValue)))).ToList();
 
             return readPosts;
+        }
+        catch(BusinessException)
+        {
+            throw new BusinessException(204, "No posts available by this filter");
         }
         catch (Exception)
         {
@@ -245,6 +265,10 @@ public class PostManager : IPostManager
 
             return readPosts;
         }
+        catch (BusinessException)
+        {
+            throw new BusinessException(204, "No posts available by this filter");
+        }
         catch (Exception)
         {
             throw new BusinessException(500, "Interal Server Error");
@@ -272,6 +296,10 @@ public class PostManager : IPostManager
 
             return readPosts;
         }
+        catch (BusinessException)
+        {
+            throw new BusinessException(204, "No posts available by this filter");
+        }
         catch (Exception)
         {
             throw new BusinessException(500, "Interal Server Error");
@@ -298,6 +326,10 @@ public class PostManager : IPostManager
                         t?.CreatedAt ?? DateTime.MinValue)))).ToList();
 
             return readPosts;
+        }
+        catch (BusinessException)
+        {
+            throw new BusinessException(204, "No posts available by this filter");
         }
         catch (Exception)
         {
