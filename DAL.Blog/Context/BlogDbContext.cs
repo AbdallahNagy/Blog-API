@@ -8,7 +8,7 @@ namespace Blog.DAL.Context;
 public class BlogDbContext : IdentityDbContext<User>
 {
     public DbSet<Comment> Comments { get; set; }
-    public DbSet<Like> Likes { get; set; }
+    public DbSet<Like> TotalLikes { get; set; }
     public DbSet<Post> Posts { get; set; }
     public DbSet<PostsTags> PostsTags { get; set; }
     public DbSet<Tag> Tags { get; set; }
@@ -25,6 +25,26 @@ public class BlogDbContext : IdentityDbContext<User>
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<User>().ToTable("Users");
+
+        modelBuilder.Entity<Post>()
+            .HasMany(p => p.PostsTags)
+            .WithOne(pt => pt.Post)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Post>()
+            .HasMany(p => p.Comments)
+            .WithOne(c => c.Post)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Post>()
+            .HasMany(p => p.Likes)
+            .WithOne(l => l.Post)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Tag>()
+            .HasIndex(p => p.Name)
+            .IsUnique()
+            .IsClustered();
 
         modelBuilder.Entity<Post>()
             .Property(e => e.CreatedAt)

@@ -79,7 +79,7 @@ namespace Blog.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Likes");
+                    b.ToTable("TotalLikes");
                 });
 
             modelBuilder.Entity("Blog.DAL.Models.Post", b =>
@@ -100,7 +100,7 @@ namespace Blog.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Likes")
+                    b.Property<int>("TotalLikes")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")

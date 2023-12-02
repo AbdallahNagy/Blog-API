@@ -46,7 +46,7 @@ public class PostManager : IPostManager
                         post.Id,
                         post.Title,
                         post.Body,
-                        post.Likes,
+                        post.TotalLikes,
                         post.AuthorId,
                         post.CreatedAt,
                         post.PostsTags
@@ -80,7 +80,7 @@ public class PostManager : IPostManager
                 post.Id, 
                 post.Title, 
                 post.Body, 
-                post.Likes, 
+                post.TotalLikes, 
                 post.AuthorId, 
                 post.CreatedAt,
                 post.PostsTags
@@ -108,7 +108,7 @@ public class PostManager : IPostManager
             Title = writePost.Title,
             Body = writePost.Body,
             AuthorId = writePost.AuthorId,
-            Likes = 0,
+            TotalLikes = 0,
         };
 
         var tags = writePost.Tags.Select(t => new Tag { Name = t.Name }).ToArray();
@@ -135,7 +135,7 @@ public class PostManager : IPostManager
                 addedPost.Id,
                 addedPost.Title,
                 addedPost.Body, 
-                addedPost.Likes, 
+                addedPost.TotalLikes, 
                 addedPost.AuthorId, 
                 addedPost.CreatedAt,
                 post.PostsTags
@@ -191,7 +191,7 @@ public class PostManager : IPostManager
                 updatedPost.Id,
                 updatedPost.Title,
                 updatedPost.Body,
-                updatedPost.Likes,
+                updatedPost.TotalLikes,
                 updatedPost.AuthorId,
                 updatedPost.CreatedAt,
                 post.PostsTags
@@ -222,7 +222,7 @@ public class PostManager : IPostManager
                 post.Id,
                 post.Title,
                 post.Body,
-                post.Likes,
+                post.TotalLikes,
                 post.AuthorId,
                 post.CreatedAt,
                 post.PostsTags
@@ -253,7 +253,7 @@ public class PostManager : IPostManager
                 post.Id, 
                 post.Title, 
                 post.Body, 
-                post.Likes, 
+                post.TotalLikes, 
                 post.AuthorId, 
                 post.CreatedAt,
                 post.PostsTags
@@ -284,7 +284,7 @@ public class PostManager : IPostManager
                 post.Id,
                 post.Title,
                 post.Body,
-                post.Likes,
+                post.TotalLikes,
                 post.AuthorId,
                 post.CreatedAt,
                 post.PostsTags
@@ -315,7 +315,7 @@ public class PostManager : IPostManager
                 post.Id,
                 post.Title,
                 post.Body,
-                post.Likes,
+                post.TotalLikes,
                 post.AuthorId,
                 post.CreatedAt,
                 post.PostsTags

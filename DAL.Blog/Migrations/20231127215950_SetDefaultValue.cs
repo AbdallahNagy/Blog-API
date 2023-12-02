@@ -40,7 +40,7 @@ namespace Blog.DAL.Migrations
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "CreatedAt",
-                table: "Likes",
+                table: "TotalLikes",
                 type: "datetime2",
                 nullable: false,
                 defaultValueSql: "GETDATE()",
@@ -89,7 +89,7 @@ namespace Blog.DAL.Migrations
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "CreatedAt",
-                table: "Likes",
+                table: "TotalLikes",
                 type: "datetime2",
                 nullable: false,
                 oldClrType: typeof(DateTime),

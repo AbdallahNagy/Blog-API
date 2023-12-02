@@ -181,7 +181,7 @@ namespace Blog.DAL.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Body = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Likes = table.Column<int>(type: "int", nullable: false),
+                    TotalLikes = table.Column<int>(type: "int", nullable: false),
                     AuthorId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -223,7 +223,7 @@ namespace Blog.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Likes",
+                name: "TotalLikes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -234,15 +234,15 @@ namespace Blog.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Likes", x => x.Id);
+                    table.PrimaryKey("PK_TotalLikes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Likes_Posts_PostId",
+                        name: "FK_TotalLikes_Posts_PostId",
                         column: x => x.PostId,
                         principalTable: "Posts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Likes_Users_UserId",
+                        name: "FK_TotalLikes_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id");
@@ -310,13 +310,13 @@ namespace Blog.DAL.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Likes_PostId",
-                table: "Likes",
+                name: "IX_TotalLikes_PostId",
+                table: "TotalLikes",
                 column: "PostId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Likes_UserId",
-                table: "Likes",
+                name: "IX_TotalLikes_UserId",
+                table: "TotalLikes",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -364,7 +364,7 @@ namespace Blog.DAL.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
-                name: "Likes");
+                name: "TotalLikes");
 
             migrationBuilder.DropTable(
                 name: "PostsTags");

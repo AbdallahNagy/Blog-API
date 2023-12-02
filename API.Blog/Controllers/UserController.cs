@@ -10,8 +10,8 @@ namespace Blog.API.Controllers
     {
         private readonly List<Post> Posts = new()
         {
-            new Post { Id = 1, Title = "First Post", Body = "This is the body of the first post.", Likes = 10, AuthorId = "user1" },
-            new Post { Id = 2, Title = "Second Post", Body = "This is the body of the second post.", Likes = 5, AuthorId = "user2" },
+            new Post { Id = 1, Title = "First Post", Body = "This is the body of the first post.", TotalLikes = 10, AuthorId = "user1" },
+            new Post { Id = 2, Title = "Second Post", Body = "This is the body of the second post.", TotalLikes = 5, AuthorId = "user2" },
             // Add more posts as needed
         };
 
