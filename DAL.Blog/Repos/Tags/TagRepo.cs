@@ -12,7 +12,10 @@ public class TagRepo : GenericRepo<Tag>, ITagRepo
     {
         _context = context;
     }
-
+    async public Task<Tag?> GetByName(string name)
+    {
+        return await _context.Set<Tag>().FirstOrDefaultAsync(t => t.Name == name);
+    }
     async public Task<List<Tag?>> GetTagsByPostId(int postId)
     {
         var postTags = await _context.Set<PostsTags>()

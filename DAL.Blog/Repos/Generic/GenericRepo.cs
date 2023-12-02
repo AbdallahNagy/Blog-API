@@ -10,7 +10,7 @@ public class GenericRepo<T> : IGenericRepo<T> where T : class
     {
         _context = context;
     }
-    virtual async public Task<List<T>?> GetAll()
+    virtual async public Task<IEnumerable<T>?> GetAll()
     {
         return await _context.Set<T>().AsNoTracking().ToListAsync();
     }

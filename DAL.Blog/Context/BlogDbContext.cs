@@ -43,8 +43,7 @@ public class BlogDbContext : IdentityDbContext<User>
 
         modelBuilder.Entity<Tag>()
             .HasIndex(p => p.Name)
-            .IsUnique()
-            .IsClustered();
+            .IsUnique();
 
         modelBuilder.Entity<Post>()
             .Property(e => e.CreatedAt)

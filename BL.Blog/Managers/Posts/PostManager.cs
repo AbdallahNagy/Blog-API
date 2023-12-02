@@ -52,15 +52,15 @@ public class PostManager : IPostManager
                         post.PostsTags
                             .Select(pt => pt.Tag)
                             .Select(t => new ReadTagDTO(
-                                t?.Id ?? 0, 
-                                t?.Name ?? "", 
+                                t?.Id ?? 0,
+                                t?.Name ?? "",
                                 t?.CreatedAt ?? DateTime.MinValue))
                             .ToList()
                         )).ToList();
 
             return readPosts;
         }
-        catch(BusinessException)
+        catch (BusinessException)
         {
             throw new BusinessException(204, "No posts available");
         }
@@ -77,11 +77,11 @@ public class PostManager : IPostManager
             var post = await _postRepo.Get(id) ?? throw new BusinessException(204, "Can't find post by this id");
 
             ReadPostDTO readPost = new(
-                post.Id, 
-                post.Title, 
-                post.Body, 
-                post.TotalLikes, 
-                post.AuthorId, 
+                post.Id,
+                post.Title,
+                post.Body,
+                post.TotalLikes,
+                post.AuthorId,
                 post.CreatedAt,
                 post.PostsTags
                     .Select(pt => pt.Tag)
@@ -91,7 +91,7 @@ public class PostManager : IPostManager
                         t?.CreatedAt ?? DateTime.MinValue)));
             return readPost;
         }
-        catch(BusinessException)
+        catch (BusinessException)
         {
             throw new BusinessException(204, "Can't find post by this id");
         }
@@ -111,15 +111,34 @@ public class PostManager : IPostManager
             TotalLikes = 0,
         };
 
-        var tags = writePost.Tags.Select(t => new Tag { Name = t.Name }).ToArray();
-
         try
         {
+            List<Tag>? tags = new();
+            var allTags = await _tagRepo.GetAll();
+            HashSet<string?>? tagNames = null;
+
+            if (allTags != null)
+            {
+                tagNames = allTags.Select(t => t.Name).ToHashSet();
+                
+                foreach (var tag in writePost.Tags)
+                {
+                    if (tagNames.Contains(tag.Name))
+                    {
+                        var existingTag = await _tagRepo.GetByName(tag.Name ?? "");
+                        tags.Add(existingTag);
+                    }
+                    else
+                    {
+                        var newTag = await _tagRepo.Add(new Tag { Name = tag.Name });
+                        tags.Add(newTag);
+                    }
+                }
+                await _tagRepo.SaveChanges();
+            }
+
             var addedPost = await _postRepo.Add(post);
             await _postRepo.SaveChanges();
-
-            await _tagRepo.AddRange(tags);
-            await _tagRepo.SaveChanges();
 
             var postsTagsWrite = tags.Select(t => new WritePostTagsDTO(addedPost.Id, t.Id));
             var postsTags = postsTagsWrite.Select(p => new PostsTags
@@ -134,9 +153,9 @@ public class PostManager : IPostManager
             return new ReadPostDTO(
                 addedPost.Id,
                 addedPost.Title,
-                addedPost.Body, 
-                addedPost.TotalLikes, 
-                addedPost.AuthorId, 
+                addedPost.Body,
+                addedPost.TotalLikes,
+                addedPost.AuthorId,
                 addedPost.CreatedAt,
                 post.PostsTags
                     .Select(pt => pt.Tag)
@@ -149,7 +168,7 @@ public class PostManager : IPostManager
         {
             throw new BusinessException(400, "ReferenceConstraintException: Can't assign post to non-existing user");
         }
-        catch(Exception)
+        catch (Exception)
         {
             throw new BusinessException(500, "Interal Server Error");
         }
@@ -168,7 +187,7 @@ public class PostManager : IPostManager
         {
             throw new BusinessException(204, "Record doesn't exist");
         }
-        catch(Exception)
+        catch (Exception)
         {
             throw new BusinessException(500, "Interal Server Error");
         }
@@ -201,7 +220,7 @@ public class PostManager : IPostManager
                         t?.Name ?? "",
                         t?.CreatedAt ?? DateTime.MinValue)));
         }
-        catch(BusinessException)
+        catch (BusinessException)
         {
             throw new BusinessException(404, "Can't find record by the provided id");
         }
@@ -234,7 +253,7 @@ public class PostManager : IPostManager
 
             return readPosts;
         }
-        catch(BusinessException)
+        catch (BusinessException)
         {
             throw new BusinessException(204, "No posts available by this filter");
         }
@@ -250,11 +269,11 @@ public class PostManager : IPostManager
         {
             List<Post> posts = await _postRepo.SearchByText(str) ?? throw new BusinessException(204, "No posts available by this filter");
             List<ReadPostDTO> readPosts = posts.Select(post => new ReadPostDTO(
-                post.Id, 
-                post.Title, 
-                post.Body, 
-                post.TotalLikes, 
-                post.AuthorId, 
+                post.Id,
+                post.Title,
+                post.Body,
+                post.TotalLikes,
+                post.AuthorId,
                 post.CreatedAt,
                 post.PostsTags
                     .Select(pt => pt.Tag)

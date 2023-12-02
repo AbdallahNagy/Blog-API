@@ -13,7 +13,7 @@ public class PostRepo : GenericRepo<Post>, IPostRepo
         _context = context;
     }
 
-    override async public Task<List<Post>?> GetAll()
+    override async public Task<IEnumerable<Post>?> GetAll()
     {
         return await _context.Set<Post>()
             .Include(p => p.PostsTags)
