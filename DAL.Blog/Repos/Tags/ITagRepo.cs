@@ -6,5 +6,5 @@ namespace Blog.DAL.Repos.Tags;
 public interface ITagRepo : IGenericRepo<Tag>
 {
     Task<Tag?> GetByName(string name);
-    Task<List<Tag?>> GetTagsByPostId(int postId);
+    Task<IEnumerable<Tag?>?> GetTagsByPostId(int postId);
 }

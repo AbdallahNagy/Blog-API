@@ -17,4 +17,18 @@ public class PostTagRepo : GenericRepo<PostsTags>, IPostTagRepo
     {
         _context = context;
     }
+
+    public async Task<PostsTags?> GetByCompositeKey(PostsTags postTag)
+    {
+        
+        return await _context.Set<PostsTags>().FindAsync(postTag);
+    }
+
+    public async Task<int> DeleteByCompositeKey(PostsTags postTag)
+    {
+        var dbPostTag = await GetByCompositeKey(postTag);
+        if (dbPostTag == null) return 0;
+        _context.Set<PostsTags>().Remove(postTag);
+        return 1;
+    }
 }

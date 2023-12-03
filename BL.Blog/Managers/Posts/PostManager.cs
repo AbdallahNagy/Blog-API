@@ -126,7 +126,10 @@ public class PostManager : IPostManager
                     if (tagNames.Contains(tag.Name))
                     {
                         var existingTag = await _tagRepo.GetByName(tag.Name ?? "");
-                        tags.Add(existingTag);
+                        if (existingTag != null)
+                        {
+                            tags.Add(existingTag);
+                        }
                     }
                     else
                     {
@@ -204,6 +207,45 @@ public class PostManager : IPostManager
 
         try
         {
+            // make get request to post tags to get all tags of this post
+            // get updated array of tags from client, and 
+            // deattach all tags not coming from client
+            // leave the same tags from client and db
+            // create new tags according to client new tags
+
+            var dbTags = await _tagRepo.GetTagsByPostId(id);
+            // check if dbTags is null
+            var dbTagsNames = dbTags!.Select(t => t!.Name ).ToHashSet();
+            var updatedTagsNames = updatePost.Tags.Select(t => t.Name).ToHashSet();
+
+            foreach (var tagName in updatedTagsNames)
+            {
+                if(!dbTagsNames.Contains(tagName))
+                {
+                    var tag = await _tagRepo.GetByName(tagName!);
+                    tag ??= await _tagRepo.Add(new Tag { Name = tagName });
+                    await _tagRepo.SaveChanges();
+
+                    var postTag = await _postTagRepo.Add(new PostsTags { PostId = id, TagId = tag.Id });
+                    await _postTagRepo.SaveChanges();
+                }
+            }
+
+            // check if tag coming from db is not exist in client update post
+            // in this case we delete tag and post tag records
+            foreach (var dbTagName in  updatedTagsNames)
+            {
+                if(!updatedTagsNames.Contains(dbTagName))
+                {
+                    var tag = dbTags!.FirstOrDefault(t => t.Name == dbTagName);
+                    await _tagRepo.Delete(tag!.Id);
+                    await _tagRepo.SaveChanges();
+
+                    await _postTagRepo.DeleteByCompositeKey(new PostsTags { PostId = id, TagId = tag.Id });
+                    await _postTagRepo.SaveChanges();
+                }
+            }
+
             var updatedPost = await _postRepo.Update(id, post) ?? throw new BusinessException(404, "Can't find record by the provided id");
             await _postRepo.SaveChanges();
             return new ReadPostDTO(

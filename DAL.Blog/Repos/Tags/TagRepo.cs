@@ -16,7 +16,7 @@ public class TagRepo : GenericRepo<Tag>, ITagRepo
     {
         return await _context.Set<Tag>().FirstOrDefaultAsync(t => t.Name == name);
     }
-    async public Task<List<Tag?>> GetTagsByPostId(int postId)
+    async public Task<IEnumerable<Tag?>?> GetTagsByPostId(int postId)
     {
         var postTags = await _context.Set<PostsTags>()
             .Where(pt => pt.PostId == postId)

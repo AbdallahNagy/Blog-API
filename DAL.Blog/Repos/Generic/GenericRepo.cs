@@ -27,14 +27,14 @@ public class GenericRepo<T> : IGenericRepo<T> where T : class
     {
         await _context.Set<T>().AddRangeAsync(entities);
     }
-    async public Task<int> Delete(int id)
+    virtual async public Task<int> Delete(int id)
     {
         var entity = await _context.Set<T>().FindAsync(id);
         if (entity == null) return 0;
         _context.Set<T>().Remove(entity);
         return 1;
     }
-    async public Task<T?> Update(int id, T entity)
+    virtual async public Task<T?> Update(int id, T entity)
     {
         var existingEntity = await _context.Set<T>().FindAsync(id);
 
