@@ -4,6 +4,8 @@ using Blog.BL.Managers.Posts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.JsonPatch;
 using System.Reflection;
+using Blog.DAL.Context;
+using Blog.DAL.Repos.Posts;
 
 namespace Blog.API.Controllers;
 
@@ -12,9 +14,11 @@ namespace Blog.API.Controllers;
 public class PostController : ControllerBase
 {
     private readonly IPostManager _postManager;
-    public PostController(IPostManager postManager)
+    private readonly IPostRepo _postRepo;
+    public PostController(IPostManager postManager, IPostRepo postRepo)
     {
         _postManager = postManager;
+        _postRepo = postRepo;
     }
 
     [HttpGet]
@@ -107,12 +111,14 @@ public class PostController : ControllerBase
 
     [HttpPatch]
     [Route("{id}")]
-    async public Task<ActionResult<ReadPostDTO>> Patch([FromBody] UpdatePostDTO post, int id)
+    async public Task<ActionResult<ReadPostDTO>> Patch([FromBody] JsonPatchDocument post, int id)
     {
         try
         {
-            var updatedPost = await _postManager.Update(post, id);
-            return updatedPost;
+            var updatedPost = await _postRepo.UpdateNew(id, post);
+            return Ok(updatedPost);
+            //var updatedPost = await _postManager.Update(post, id);
+            //return updatedPost;
         }
         catch (BusinessException ex)
         {

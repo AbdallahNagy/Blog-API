@@ -1,6 +1,7 @@
 ﻿using Blog.DAL.Context;
 using Blog.DAL.Models;
 using Blog.DAL.Repos.Generic;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog.DAL.Repos.Posts;
@@ -30,17 +31,28 @@ public class PostRepo : GenericRepo<Post>, IPostRepo
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public override async Task<Post?> Update(int id, Post entity)
+    //public override async Task<Post?> Update(int id, Post entity)
+    //{
+    //    var existingEntity = await _context.Set<Post>()
+    //        .Include(p => p.PostsTags)
+    //        .ThenInclude(pt => pt.Tag)
+    //        .FirstOrDefaultAsync(p => p.Id == id);
+
+    //    if (existingEntity == null) return null;
+
+    //    _context.Entry(entity).State = EntityState.Detached;
+    //    _context.Set<Post>().Update(existingEntity);
+    //    return existingEntity;
+    //}
+
+    public async Task<Post?> UpdateNew(int id, JsonPatchDocument entity)
     {
         var existingEntity = await _context.Set<Post>()
-            .Include(p => p.PostsTags)
-            .ThenInclude(pt => pt.Tag)
             .FirstOrDefaultAsync(p => p.Id == id);
 
-        if (existingEntity == null) return null;
+        if(existingEntity == null) return null;
 
-        _context.Entry(entity).State = EntityState.Detached;
-        _context.Set<Post>().Update(existingEntity);
+        entity.ApplyTo(existingEntity);
         return existingEntity;
     }
 
