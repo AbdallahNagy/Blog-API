@@ -3,9 +3,8 @@ using Blog.BL.Exception_Handling;
 using Blog.BL.Managers.Posts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.JsonPatch;
-using System.Reflection;
-using Blog.DAL.Context;
 using Blog.DAL.Repos.Posts;
+using Blog.DAL.Models;
 
 namespace Blog.API.Controllers;
 
@@ -14,11 +13,9 @@ namespace Blog.API.Controllers;
 public class PostController : ControllerBase
 {
     private readonly IPostManager _postManager;
-    private readonly IPostRepo _postRepo;
     public PostController(IPostManager postManager, IPostRepo postRepo)
     {
         _postManager = postManager;
-        _postRepo = postRepo;
     }
 
     [HttpGet]
@@ -111,14 +108,17 @@ public class PostController : ControllerBase
 
     [HttpPatch]
     [Route("{id}")]
-    async public Task<ActionResult<ReadPostDTO>> Patch([FromBody] JsonPatchDocument post, int id)
+    async public Task<ActionResult<ReadPostDTO>> Patch([FromBody] JsonPatchDocument<Post> post, int id)
     {
         try
         {
-            var updatedPost = await _postRepo.UpdateNew(id, post);
-            return Ok(updatedPost);
-            //var updatedPost = await _postManager.Update(post, id);
-            //return updatedPost;
+            var readPost = await _postManager.PatchUpdate(post, id);
+            if(!ModelState.IsValid)
+            {
+                return new BadRequestObjectResult(ModelState);
+            }
+
+            return Ok(readPost);
         }
         catch (BusinessException ex)
         {

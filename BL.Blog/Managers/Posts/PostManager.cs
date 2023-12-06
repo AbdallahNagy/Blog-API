@@ -1,23 +1,13 @@
-﻿using Azure;
-using Blog.BL.DTOs.Posts;
+﻿using Blog.BL.DTOs.Posts;
 using Blog.BL.DTOs.PostTags;
 using Blog.BL.DTOs.Tags;
 using Blog.BL.Exception_Handling;
-using Blog.DAL.Context;
 using Blog.DAL.Models;
 using Blog.DAL.Repos.Posts;
 using Blog.DAL.Repos.PostTag;
 using Blog.DAL.Repos.Tags;
 using EntityFramework.Exceptions.Common;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Data.SqlTypes;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace Blog.BL.Managers.Posts;
 
@@ -197,77 +187,39 @@ public class PostManager : IPostManager
         }
     }
 
-    //async public Task<ReadPostDTO> Update(JsonPatchDocument updatePost, int id)
-    //{
-        //var post = new Post
-        //{
-        //    Id = id,
-        //    Title = updatePost.Title,
-        //    Body = updatePost.Body,
-        //};
+    async public Task<ReadPostDTO> PatchUpdate(JsonPatchDocument<Post> updatePost, int id)
+    {
+        try
+        {
+            var post = await _postRepo.PatchUpdate(id, updatePost)
+                ?? throw new BusinessException(404, "Record doesn't exist");
+            
+            await _postRepo.SaveChanges();
 
+            ReadPostDTO readPost = new(
+                post.Id,
+                post.Title, 
+                post.Body, 
+                post.TotalLikes, 
+                post.AuthorId,
+                post.CreatedAt, 
+                post.PostsTags
+                    .Select(pt => pt.Tag)
+                    .Select(p => new ReadTagDTO(p!.Id, p.Name, p.CreatedAt))
+                    .ToList());
 
-
-        //try
-        //{
-            //var dbTags = await _tagRepo.GetTagsByPostId(id);
-            //// check if dbTags is null
-            //var dbTagsNames = dbTags!.Select(t => t!.Name ).ToHashSet();
-            //var updatedTagsNames = updatePost.Tags.Select(t => t.Name).ToHashSet();
-
-            //foreach (var tagName in updatedTagsNames)
-            //{
-            //    if(!dbTagsNames.Contains(tagName))
-            //    {
-            //        var tag = await _tagRepo.GetByName(tagName!);
-            //        tag ??= await _tagRepo.Add(new Tag { Name = tagName });
-            //        await _tagRepo.SaveChanges();
-
-            //        var postTag = await _postTagRepo.Add(new PostsTags { PostId = id, TagId = tag.Id });
-            //        await _postTagRepo.SaveChanges();
-            //    }
-            //}
-
-            //// check if tag coming from db is not exist in client update post
-            //// in this case we delete tag and post tag records
-            //foreach (var dbTagName in  updatedTagsNames)
-            //{
-            //    if(!updatedTagsNames.Contains(dbTagName))
-            //    {
-            //        var tag = dbTags!.FirstOrDefault(t => t!.Name == dbTagName);
-            //        await _tagRepo.Delete(tag!.Id);
-            //        await _tagRepo.SaveChanges();
-
-            //        await _postTagRepo.DeleteByCompositeKey(new PostsTags { PostId = id, TagId = tag.Id });
-            //        await _postTagRepo.SaveChanges();
-            //    }
-            //}
-
-        //    var updatedPost = await _postRepo.Update(id, post) ?? throw new BusinessException(404, "Can't find record by the provided id");
-        //    await _postRepo.SaveChanges();
-        //    return new ReadPostDTO(
-        //        updatedPost.Id,
-        //        updatedPost.Title,
-        //        updatedPost.Body,
-        //        updatedPost.TotalLikes,
-        //        updatedPost.AuthorId,
-        //        updatedPost.CreatedAt,
-        //        updatedPost.PostsTags
-        //            .Select(pt => pt.Tag)
-        //            .Select(t => new ReadTagDTO(
-        //                t?.Id ?? 0,
-        //                t?.Name ?? "",
-        //                t?.CreatedAt ?? DateTime.MinValue)));
-        //}
-        //catch (BusinessException)
-        //{
-        //    throw new BusinessException(404, "Can't find record by the provided id");
-        //}
-        //catch (Exception)
-        //{
-        //    throw new BusinessException(500, "Interal Server Error");
-        //}
-    //}
+            return readPost;
+        }
+        catch (BusinessException)
+        {
+            throw new BusinessException(404, "Can't find record by the provided id");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            throw new BusinessException(500, "Interal Server Error");
+        }
+    }
 
     async public Task<List<ReadPostDTO>?> SearchByTags(int[] tagsIds)
     {

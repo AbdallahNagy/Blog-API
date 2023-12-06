@@ -1,6 +1,6 @@
-﻿using Azure;
-using Blog.BL.DTOs.Posts;
+﻿using Blog.BL.DTOs.Posts;
 using Blog.DAL.Models;
+using Microsoft.AspNetCore.JsonPatch;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ public interface IPostManager
     Task<List<ReadPostDTO>?> GetAll();
     Task<ReadPostDTO?> GetById(int id);
     Task<ReadPostDTO> Add(WritePostDTO post);
-  //  Task<ReadPostDTO> Update(JsonPatchDocument post, int id);
+    Task<ReadPostDTO> PatchUpdate(JsonPatchDocument<Post> post, int id);
     Task Delete(int id);
     Task<List<ReadPostDTO>?> SearchByTags(int[] tagsIds);
     Task<List<ReadPostDTO>?> SearchByText(string str);
