@@ -45,6 +45,11 @@ public class BlogDbContext : IdentityDbContext<User>
             .HasIndex(p => p.Name)
             .IsUnique();
 
+        modelBuilder.Entity<Tag>()
+            .HasMany(t => t.PostTags)
+            .WithOne(pt => pt.Tag)
+            .OnDelete(DeleteBehavior.Cascade);
+
         modelBuilder.Entity<Post>()
             .Property(e => e.CreatedAt)
             .HasDefaultValueSql("GETDATE()");

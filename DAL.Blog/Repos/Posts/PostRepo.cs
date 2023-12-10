@@ -31,30 +31,29 @@ public class PostRepo : GenericRepo<Post>, IPostRepo
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    //public override async Task<Post?> Update(int id, Post entity)
-    //{
-    //    var existingEntity = await _context.Set<Post>()
-    //        .Include(p => p.PostsTags)
-    //        .ThenInclude(pt => pt.Tag)
-    //        .FirstOrDefaultAsync(p => p.Id == id);
-
-    //    if (existingEntity == null) return null;
-
-    //    _context.Entry(entity).State = EntityState.Detached;
-    //    _context.Set<Post>().Update(existingEntity);
-    //    return existingEntity;
-    //}
-
-    public async Task<Post?> UpdateNew(int id, JsonPatchDocument entity)
+    public override async Task<Post?> Update(int id, Post entity)
     {
         var existingEntity = await _context.Set<Post>()
+            .Include(p => p.PostsTags)
+            .ThenInclude(pt => pt.Tag)
             .FirstOrDefaultAsync(p => p.Id == id);
 
-        if(existingEntity == null) return null;
+        if (existingEntity == null) return null;
 
-        entity.ApplyTo(existingEntity);
+        _context.Entry(existingEntity).CurrentValues.SetValues(entity);
         return existingEntity;
     }
+
+    //public async Task<Post?> UpdateNew(int id, JsonPatchDocument entity)
+    //{
+    //    var existingEntity = await _context.Set<Post>()
+    //        .FirstOrDefaultAsync(p => p.Id == id);
+
+    //    if(existingEntity == null) return null;
+
+    //    entity.ApplyTo(existingEntity);
+    //    return existingEntity;
+    //}
 
     async public Task<List<Post?>?> SearchByTags(int[] tagsIds)
     {

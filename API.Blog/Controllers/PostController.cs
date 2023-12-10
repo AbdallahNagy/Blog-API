@@ -111,14 +111,12 @@ public class PostController : ControllerBase
 
     [HttpPatch]
     [Route("{id}")]
-    async public Task<ActionResult<ReadPostDTO>> Patch([FromBody] JsonPatchDocument post, int id)
+    async public Task<ActionResult<ReadPostDTO>> Patch([FromBody] WritePostDTO post, int id)
     {
         try
         {
-            var updatedPost = await _postRepo.UpdateNew(id, post);
-            return Ok(updatedPost);
-            //var updatedPost = await _postManager.Update(post, id);
-            //return updatedPost;
+            var updatedPost = await _postManager.Update(post, id);
+            return updatedPost;
         }
         catch (BusinessException ex)
         {
