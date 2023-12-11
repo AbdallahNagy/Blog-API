@@ -1,5 +1,7 @@
+using Blog.BL.Managers.Comments;
 using Blog.BL.Managers.Posts;
 using Blog.DAL.Context;
+using Blog.DAL.Repos.Comments;
 using Blog.DAL.Repos.Posts;
 using Blog.DAL.Repos.PostTag;
 using Blog.DAL.Repos.Tags;
@@ -24,10 +26,12 @@ builder.Services.AddScoped<IPostRepo, PostRepo>();
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<ITagRepo, TagRepo>();
 builder.Services.AddScoped<IPostTagRepo, PostTagRepo>();
+builder.Services.AddScoped<ICommentRepo, CommentRepo>();
 
 
 // Managers Registration
 builder.Services.AddScoped<IPostManager, PostManager>();
+builder.Services.AddScoped<ICommentManager, CommentManager>();
 
 
 var app = builder.Build();

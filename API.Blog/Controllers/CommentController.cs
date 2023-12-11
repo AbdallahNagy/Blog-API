@@ -1,4 +1,7 @@
-﻿using Blog.DAL.Models;
+﻿using Blog.BL.DTOs.Comments;
+using Blog.BL.Exception_Handling;
+using Blog.BL.Managers.Comments;
+using Blog.DAL.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,43 +11,68 @@ namespace Blog.API.Controllers
     [ApiController]
     public class CommentController : ControllerBase
     {
-        private readonly List<Post> Posts = new()
+        private readonly ICommentManager _commentManager;
+        public CommentController(ICommentManager commentManager)
         {
-            new Post { Id = 1, Title = "First Post", Body = "This is the body of the first post.", TotalLikes = 10, AuthorId = "user1" },
-            new Post { Id = 2, Title = "Second Post", Body = "This is the body of the second post.", TotalLikes = 5, AuthorId = "user2" },
-        };
-
-        [HttpGet]
-        public ActionResult<IEnumerable<Post>> GetAll(int postId)
-        {
-            return Ok(Posts);
+            _commentManager = commentManager;
         }
 
         [HttpGet]
-        [Route("{id}")]
-        public ActionResult<Post> Get(int postId, int id)
+        async public Task<ActionResult<IEnumerable<ReadCommentDTO>>> GetAll(int postId)
         {
-            return Ok(Posts[id]);
+            try
+            {
+                var comments = await _commentManager.GetAll(postId);
+                return Ok(comments);
+            }
+            catch (BusinessException ex)
+            {
+                return StatusCode(ex.StatusCode, ex.Message);
+            }
         }
 
         [HttpPost]
-        public ActionResult<Post> Post(Post post)
+        public async Task<ActionResult<ReadCommentDTO>> Post([FromBody] WriteCommentDTO comment)
         {
-            return Ok(post);
+            try
+            {
+                var addedComment = await _commentManager.Add(comment);
+                return Ok(addedComment);
+            }
+            catch (BusinessException ex)
+            {
+                return StatusCode(ex.StatusCode, ex.Message);
+            }
         }
 
         [HttpPatch]
         [Route("{id}")]
-        public ActionResult<Post> Patch(Post post)
+        public async Task<ActionResult<Post>> Patch([FromBody] UpdateCommentDTO comment, int id)
         {
-            return Patch(post);
+            try
+            {
+                var updatedComment = await _commentManager.Update(comment, id);
+                return Ok(updatedComment);
+            }
+            catch (BusinessException ex)
+            {
+                return StatusCode(ex.StatusCode, ex.Message);
+            }
         }
 
         [HttpDelete]
         [Route("{id}")]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            return Ok();
+            try
+            {
+                await _commentManager.Delete(id);
+                return Ok();
+            }
+            catch (BusinessException ex)
+            {
+                return StatusCode(ex.StatusCode, ex.Message);
+            }
         }
     }
 }
