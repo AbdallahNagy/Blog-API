@@ -31,14 +31,16 @@ public class PostRepo : GenericRepo<Post>, IPostRepo
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public async Task<Post?> PatchUpdate(int id, JsonPatchDocument<Post> entity)
+    public override async Task<Post?> Update(int id, Post entity)
     {
         var existingEntity = await _context.Set<Post>()
+            .Include(p => p.PostsTags)
+            .ThenInclude(pt => pt.Tag)
             .FirstOrDefaultAsync(p => p.Id == id);
 
-        if(existingEntity == null) return null;
+        if (existingEntity == null) return null;
 
-        entity.ApplyTo(existingEntity);
+        _context.Entry(existingEntity).CurrentValues.SetValues(entity);
         return existingEntity;
     }
 

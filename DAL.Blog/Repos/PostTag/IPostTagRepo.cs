@@ -10,6 +10,6 @@ namespace Blog.DAL.Repos.PostTag;
 
 public interface IPostTagRepo : IGenericRepo<PostsTags>
 {
-    Task<PostsTags?> GetByCompositeKey(PostsTags postTag);
-    Task<int> DeleteByCompositeKey(PostsTags postTag);
+    Task<PostsTags?> GetByCompositeKey(int id1, int id2);
+    Task<int> DeleteByCompositeKey(int id1, int id2);
 }
