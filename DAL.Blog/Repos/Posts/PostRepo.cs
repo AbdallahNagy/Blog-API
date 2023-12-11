@@ -44,17 +44,6 @@ public class PostRepo : GenericRepo<Post>, IPostRepo
         return existingEntity;
     }
 
-    //public async Task<Post?> UpdateNew(int id, JsonPatchDocument entity)
-    //{
-    //    var existingEntity = await _context.Set<Post>()
-    //        .FirstOrDefaultAsync(p => p.Id == id);
-
-    //    if(existingEntity == null) return null;
-
-    //    entity.ApplyTo(existingEntity);
-    //    return existingEntity;
-    //}
-
     async public Task<List<Post?>?> SearchByTags(int[] tagsIds)
     {
         return await _context.Set<PostsTags>()
