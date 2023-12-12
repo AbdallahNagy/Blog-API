@@ -22,4 +22,24 @@ public class CommentRepo : GenericRepo<Comment>, ICommentRepo
     {
         return await _context.Set<Comment>().Where(c => c.PostId == postId).ToListAsync();
     }
+
+    public async Task<Comment?> Update(int id, int postId, Comment entity)
+    {
+        // we should replace post id with user id to tune the performance
+        var existingEntity = await _context.Set<Comment>().Where(c => c.PostId == postId).FirstOrDefaultAsync(c => c.Id == id);
+
+        if (existingEntity == null) return null;
+
+        existingEntity.Body = entity.Body;
+
+        return existingEntity;
+    }
+    async public Task<int> Delete(int id, int postId)
+    {
+        // we should replace post id with user id to tune the performance
+        var entity = await _context.Set<Comment>().Where(c => c.PostId == postId).FirstOrDefaultAsync(c => c.Id == id);
+        if (entity == null) return 0;
+        _context.Set<Comment>().Remove(entity);
+        return 1;
+    }
 }

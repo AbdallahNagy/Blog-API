@@ -17,13 +17,13 @@ public class CommentManager : ICommentManager
     {
         _commentRepo = commentRepo;
     }
-    async public Task<ReadCommentDTO> Add(WriteCommentDTO commentToAdd)
+    async public Task<ReadCommentDTO> Add(WriteCommentDTO commentToAdd, int postId)
     {
         var comment = new Comment
         {
             Body = commentToAdd.Body,
             UserId = commentToAdd.UserId,
-            PostId = commentToAdd.PostId
+            PostId = postId
         };
 
         try
@@ -37,7 +37,7 @@ public class CommentManager : ICommentManager
         }
         catch (ReferenceConstraintException)
         {
-            throw new BusinessException(400, "ReferenceConstraintException: Can't assign post to non-existing user");
+            throw new BusinessException(400, "ReferenceConstraintException");
         }
         catch (Exception)
         {
@@ -45,12 +45,12 @@ public class CommentManager : ICommentManager
         }
     }
 
-    public async Task Delete(int id)
+    public async Task Delete(int id, int postId)
     {
         try
         {
-            var result = await _commentRepo.Delete(id);
-            if (result == 0) throw new BusinessException(404, "Record doesn't exist");
+            var result = await _commentRepo.Delete(id, postId);
+            if (result == 0) throw new BusinessException(204, "Record doesn't exist");
 
             await _commentRepo.SaveChanges();
         }
@@ -84,16 +84,17 @@ public class CommentManager : ICommentManager
         }
     }
 
-    public async Task<ReadCommentDTO> Update(UpdateCommentDTO commentToUpdate, int id)
+    public async Task<ReadCommentDTO> Update(UpdateCommentDTO commentToUpdate, int id, int postId)
     {
         var comment = new Comment
         {
             Body = commentToUpdate.Body,
+
         };
 
         try
         {
-            var updatedComment = await _commentRepo.Update(id, comment)
+            var updatedComment = await _commentRepo.Update(id, postId, comment)
                 ?? throw new BusinessException(404, "Record doesn't exist");
 
             await _commentRepo.SaveChanges();
@@ -103,8 +104,9 @@ public class CommentManager : ICommentManager
         {
             throw new BusinessException(404, "Record doesn't exist");
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Console.WriteLine(ex.Message);
             throw new BusinessException(500, "Internal Server Error");
         }
     }

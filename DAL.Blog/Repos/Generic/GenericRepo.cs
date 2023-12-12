@@ -40,9 +40,9 @@ public class GenericRepo<T> : IGenericRepo<T> where T : class
 
         if (existingEntity == null) return null;
 
-        _context.Entry(existingEntity).CurrentValues.SetValues(entity);
-
-        return existingEntity;
+        _context.Entry(existingEntity).State = EntityState.Detached;
+        _context.Set<T>().Update(entity);
+        return entity;
     }
     async public Task<int> SaveChanges()
     {

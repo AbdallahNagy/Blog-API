@@ -32,11 +32,11 @@ namespace Blog.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ReadCommentDTO>> Post([FromBody] WriteCommentDTO comment)
+        public async Task<ActionResult<ReadCommentDTO>> Post([FromBody] WriteCommentDTO comment, int postId)
         {
             try
             {
-                var addedComment = await _commentManager.Add(comment);
+                var addedComment = await _commentManager.Add(comment, postId);
                 return Ok(addedComment);
             }
             catch (BusinessException ex)
@@ -47,11 +47,11 @@ namespace Blog.API.Controllers
 
         [HttpPatch]
         [Route("{id}")]
-        public async Task<ActionResult<Post>> Patch([FromBody] UpdateCommentDTO comment, int id)
+        public async Task<ActionResult<Post>> Patch([FromBody] UpdateCommentDTO comment, int id, int postId)
         {
             try
             {
-                var updatedComment = await _commentManager.Update(comment, id);
+                var updatedComment = await _commentManager.Update(comment, id, postId);
                 return Ok(updatedComment);
             }
             catch (BusinessException ex)
@@ -62,11 +62,11 @@ namespace Blog.API.Controllers
 
         [HttpDelete]
         [Route("{id}")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> Delete(int id, int postId)
         {
             try
             {
-                await _commentManager.Delete(id);
+                await _commentManager.Delete(id, postId);
                 return Ok();
             }
             catch (BusinessException ex)

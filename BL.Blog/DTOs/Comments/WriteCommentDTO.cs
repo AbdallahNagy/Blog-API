@@ -6,4 +6,4 @@ using System.Threading.Tasks;
 
 namespace Blog.BL.DTOs.Comments;
 
-public record WriteCommentDTO(string? Body, string UserId, int PostId);
+public record WriteCommentDTO(string? Body, string UserId);
