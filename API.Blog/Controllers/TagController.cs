@@ -1,4 +1,7 @@
-﻿using Blog.DAL.Models;
+﻿using Blog.BL.DTOs.Tags;
+using Blog.BL.Exception_Handling;
+using Blog.BL.Managers.Tags;
+using Blog.DAL.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,29 +11,23 @@ namespace Blog.API.Controllers
     [ApiController]
     public class TagController : ControllerBase
     {
-        private readonly List<Post> Posts = new()
+        private readonly ITagManager _tagManager;
+        public TagController(ITagManager tagManager)
         {
-            new Post { Id = 1, Title = "First Post", Body = "This is the body of the first post.", TotalLikes = 10, AuthorId = "user1" },
-            new Post { Id = 2, Title = "Second Post", Body = "This is the body of the second post.", TotalLikes = 5, AuthorId = "user2" },
-        };
-
+            _tagManager = tagManager;
+        }
         [HttpGet]
-        public ActionResult<IEnumerable<Post>> GetAll()
+        public async Task<ActionResult<IEnumerable<ReadTagDTO>>> GetAll()
         {
-            return Ok(Posts);
-        }
-
-        [HttpPost]
-        public ActionResult<Post> Post(Post post)
-        {
-            return Ok(post);
-        }
-
-        [HttpDelete]
-        [Route("{id}")]
-        public ActionResult Delete(int id)
-        {
-            return Ok();
+            try
+            {
+                var tags = await _tagManager.GetAll();
+                return tags!.ToList();
+            }
+            catch (BusinessException ex)
+            {
+                return StatusCode(ex.StatusCode, ex.Message);
+            }
         }
     }
 }

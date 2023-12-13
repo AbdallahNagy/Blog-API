@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.JsonPatch;
 using Blog.DAL.Repos.Posts;
 using Blog.DAL.Models;
+using System.Collections.Generic;
 
 namespace Blog.API.Controllers;
 
@@ -22,59 +23,70 @@ public class PostController : ControllerBase
     async public Task<ActionResult<IEnumerable<ReadPostDTO>?>> GetAll(
         [FromQuery] string title = "",
         [FromQuery] string body = "",
-        [FromQuery] string text = ""
+        [FromQuery] int limit = -1,
+        [FromQuery] int offset = -1,
+        [FromQuery] int[]? tagsIds = null
         )
     {
-        if (title != "")
+        try
         {
-            try
-            {
-                var posts = await _postManager.SearchInTitle(title);
-                return posts;
-            }
-            catch (BusinessException ex)
-            {
-                return StatusCode(ex.StatusCode, ex.Message);
-            }
+            var posts = await _postManager.Filter(title, body, tagsIds, limit, offset);
+            return posts;
         }
-        else if (body != "")
+        catch (BusinessException ex)
         {
-            try
-            {
-                var posts = await _postManager.SearchInBody(body);
-                return posts;
-            }
-            catch (BusinessException ex)
-            {
-                return StatusCode(ex.StatusCode, ex.Message);
-            }
+            return StatusCode(ex.StatusCode, ex.Message);
         }
-        else if (text != "")
-        {
-            try
-            {
-                // searches by text in title and body
-                var posts = await _postManager.SearchByText(text);
-                return posts;
-            }
-            catch (BusinessException ex)
-            {
-                return StatusCode(ex.StatusCode, ex.Message);
-            }
-        }
-        else
-        {
-            try
-            {
-                // searches by text in title and body
-                var posts = await _postManager.GetAll();
-                return posts;
-            }
-            catch (BusinessException ex)
-            {
-                return StatusCode(ex.StatusCode, ex.Message);
-            }
-        }
+
+        //if (title != "")
+        //{
+        //    try
+        //    {
+        //        var posts = await _postManager.SearchInTitle(title);
+        //        return posts;
+        //    }
+        //    catch (BusinessException ex)
+        //    {
+        //        return StatusCode(ex.StatusCode, ex.Message);
+        //    }
+        //}
+        //else if (body != "")
+        //{
+        //    try
+        //    {
+        //        var posts = await _postManager.SearchInBody(body);
+        //        return posts;
+        //    }
+        //    catch (BusinessException ex)
+        //    {
+        //        return StatusCode(ex.StatusCode, ex.Message);
+        //    }
+        //}
+        //else if (text != "")
+        //{
+        //    try
+        //    {
+        //        // searches by text in title and body
+        //        var posts = await _postManager.SearchByText(text);
+        //        return posts;
+        //    }
+        //    catch (BusinessException ex)
+        //    {
+        //        return StatusCode(ex.StatusCode, ex.Message);
+        //    }
+        //}
+        //else
+        //{
+        //    try
+        //    {
+        //        var posts = await _postManager.GetAll();
+        //        return posts;
+        //    }
+        //    catch (BusinessException ex)
+        //    {
+        //        return StatusCode(ex.StatusCode, ex.Message);
+        //    }
+        //}
     }
 
     [HttpGet]

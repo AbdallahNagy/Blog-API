@@ -3,6 +3,7 @@ using Blog.DAL.Models;
 using Blog.DAL.Repos.Generic;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace Blog.DAL.Repos.Posts;
 
@@ -74,5 +75,37 @@ public class PostRepo : GenericRepo<Post>, IPostRepo
             .Where(post => post.Body!.Contains(str))
             .AsNoTracking()
             .ToListAsync();
+    }
+
+    async public Task<List<Post>?> Filter(string title, string body, int[]? tagsIds, int limit, int offset)
+    {
+        var posts = _context.Set<Post>()
+            .OrderByDescending(p => p.CreatedAt);
+
+        if (!string.IsNullOrEmpty(title))
+        {
+            posts = (IOrderedQueryable<Post>)posts.Where(p => p.Title!.Contains(title));
+        }
+
+        if(!string.IsNullOrEmpty(title))
+        {
+            posts = (IOrderedQueryable<Post>)posts.Where(p => p.Body!.Contains(body));
+        }
+
+        await Console.Out.WriteLineAsync(tagsIds!.ToString());
+        if (tagsIds != null && tagsIds.Length != 0)
+        {
+            posts = (IOrderedQueryable<Post>)posts
+                .Where(p => tagsIds
+                    .All(tagId => p.PostsTags
+                    .Any(pt => pt.TagId == tagId)));
+        }
+
+        if (limit > 0 && offset >= 0)
+        {
+            posts = (IOrderedQueryable<Post>)posts.Skip(offset).Take(limit);
+        }
+
+        return await posts.ToListAsync();
     }
 }

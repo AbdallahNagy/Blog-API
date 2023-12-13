@@ -51,6 +51,9 @@ public class BlogDbContext : IdentityDbContext<User>
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Post>()
+            .HasIndex(p => p.CreatedAt);
+
+        modelBuilder.Entity<Post>()
             .Property(e => e.CreatedAt)
             .HasDefaultValueSql("GETDATE()");
 

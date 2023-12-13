@@ -47,7 +47,7 @@ namespace Blog.API.Controllers
 
         [HttpPatch]
         [Route("{id}")]
-        public async Task<ActionResult<Post>> Patch([FromBody] UpdateCommentDTO comment, int id, int postId)
+        public async Task<ActionResult<ReadCommentDTO>> Patch([FromBody] UpdateCommentDTO comment, int id, int postId)
         {
             try
             {

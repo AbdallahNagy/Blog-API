@@ -389,4 +389,36 @@ public class PostManager : IPostManager
             throw new BusinessException(500, "Interal Server Error");
         }
     }
+
+    public async Task<List<ReadPostDTO>?> Filter(string title, string body, int[]? tagsIds, int limit, int offset)
+    {
+        try
+        {
+            var posts = await _postRepo.Filter(title, body, tagsIds, limit, offset)
+                ?? throw new BusinessException(204, "No posts available by this filter");
+
+            return posts.Select(post => new ReadPostDTO(
+                post.Id,
+                post.Title,
+                post.Body,
+                post.TotalLikes,
+                post.AuthorId,
+                post.CreatedAt,
+                post.PostsTags
+                    .Select(pt => pt.Tag)
+                    .Select(t => new ReadTagDTO(
+                        t?.Id ?? 0,
+                        t?.Name ?? "",
+                        t?.CreatedAt ?? DateTime.MinValue)))).ToList();
+        }
+        catch (BusinessException ex)
+        {
+            throw new BusinessException(ex.StatusCode, ex.Message);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            throw new BusinessException(500, "Internal Server Error");
+        }
+    }
 }
