@@ -1,23 +1,12 @@
-﻿using Azure;
-using Blog.BL.DTOs.Posts;
+﻿using Blog.BL.DTOs.Posts;
 using Blog.BL.DTOs.PostTags;
 using Blog.BL.DTOs.Tags;
 using Blog.BL.Exception_Handling;
-using Blog.DAL.Context;
 using Blog.DAL.Models;
 using Blog.DAL.Repos.Posts;
 using Blog.DAL.Repos.PostTag;
 using Blog.DAL.Repos.Tags;
 using EntityFramework.Exceptions.Common;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Data.SqlTypes;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Blog.BL.Managers.Posts;
 
@@ -121,7 +110,7 @@ public class PostManager : IPostManager
             if (allTags != null)
             {
                 tagNames = allTags.Select(t => t.Name).ToHashSet();
-                
+
                 foreach (var tag in writePost.Tags)
                 {
                     if (tagNames.Contains(tag.Name))
@@ -228,7 +217,7 @@ public class PostManager : IPostManager
 
             foreach (var dbTagName in dbTagsNames)
             {
-                if(dbTagName == null) break;
+                if (dbTagName == null) break;
                 if (!updatedTagsNames.Contains(dbTagName))
                 {
                     var tag = dbTags!.FirstOrDefault(t => t!.Name == dbTagName);

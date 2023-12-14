@@ -1,11 +1,6 @@
 ﻿using Blog.BL.DTOs.Tags;
 using Blog.BL.Exception_Handling;
 using Blog.DAL.Repos.Tags;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Blog.BL.Managers.Tags;
 
@@ -20,12 +15,12 @@ public class TagManager : ITagManager
     {
         try
         {
-            var tags = await _tagRepo.GetAll() 
+            var tags = await _tagRepo.GetAll()
                 ?? throw new BusinessException(404, "Tags not found");
 
             return tags.Select(t => new ReadTagDTO(t.Id, t.Name, t.CreatedAt));
         }
-        catch(BusinessException ex)
+        catch (BusinessException ex)
         {
             await Console.Out.WriteLineAsync($"business exception error with status: {ex.StatusCode}. and Message: {ex.Message}.");
             throw new BusinessException(ex.StatusCode, ex.Message);

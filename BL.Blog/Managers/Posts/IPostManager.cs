@@ -1,11 +1,4 @@
 ﻿using Blog.BL.DTOs.Posts;
-using Blog.DAL.Models;
-using Microsoft.AspNetCore.JsonPatch;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Blog.BL.Managers.Posts;
 public interface IPostManager

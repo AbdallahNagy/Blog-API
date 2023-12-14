@@ -1,8 +1,6 @@
 ﻿using Blog.BL.DTOs.Comments;
 using Blog.BL.Exception_Handling;
 using Blog.BL.Managers.Comments;
-using Blog.DAL.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.API.Controllers

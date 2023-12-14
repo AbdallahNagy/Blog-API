@@ -6,7 +6,7 @@ namespace Blog.DAL.Repos.Generic;
 public class GenericRepo<T> : IGenericRepo<T> where T : class
 {
     private readonly BlogDbContext _context;
-    public GenericRepo(BlogDbContext context) 
+    public GenericRepo(BlogDbContext context)
     {
         _context = context;
     }
@@ -23,7 +23,7 @@ public class GenericRepo<T> : IGenericRepo<T> where T : class
         await _context.Set<T>().AddAsync(entity);
         return entity;
     }
-    async public Task AddRange(IEnumerable<T> entities) 
+    async public Task AddRange(IEnumerable<T> entities)
     {
         await _context.Set<T>().AddRangeAsync(entities);
     }

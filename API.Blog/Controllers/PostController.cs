@@ -2,10 +2,6 @@
 using Blog.BL.Exception_Handling;
 using Blog.BL.Managers.Posts;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.JsonPatch;
-using Blog.DAL.Repos.Posts;
-using Blog.DAL.Models;
-using System.Collections.Generic;
 
 namespace Blog.API.Controllers;
 

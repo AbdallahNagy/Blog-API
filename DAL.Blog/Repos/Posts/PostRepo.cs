@@ -1,9 +1,7 @@
 ﻿using Blog.DAL.Context;
 using Blog.DAL.Models;
 using Blog.DAL.Repos.Generic;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
 
 namespace Blog.DAL.Repos.Posts;
 
@@ -89,7 +87,7 @@ public class PostRepo : GenericRepo<Post>, IPostRepo
             posts = (IOrderedQueryable<Post>)posts.Where(p => p.Title!.Contains(title));
         }
 
-        if(!string.IsNullOrEmpty(body))
+        if (!string.IsNullOrEmpty(body))
         {
             posts = (IOrderedQueryable<Post>)posts.Where(p => p.Body!.Contains(body));
         }

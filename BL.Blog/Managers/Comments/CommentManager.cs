@@ -3,11 +3,6 @@ using Blog.BL.Exception_Handling;
 using Blog.DAL.Models;
 using Blog.DAL.Repos.Comments;
 using EntityFramework.Exceptions.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Blog.BL.Managers.Comments;
 public class CommentManager : ICommentManager
@@ -54,7 +49,7 @@ public class CommentManager : ICommentManager
 
             await _commentRepo.SaveChanges();
         }
-        catch(BusinessException ex)
+        catch (BusinessException ex)
         {
             throw new BusinessException(ex.StatusCode, ex.Message);
         }
@@ -100,7 +95,7 @@ public class CommentManager : ICommentManager
             await _commentRepo.SaveChanges();
             return new ReadCommentDTO(updatedComment.Id, updatedComment.Body, updatedComment.CreatedAt, updatedComment.UserId);
         }
-        catch(BusinessException)
+        catch (BusinessException)
         {
             throw new BusinessException(404, "Record doesn't exist");
         }
