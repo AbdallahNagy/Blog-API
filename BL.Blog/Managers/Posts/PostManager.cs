@@ -390,11 +390,11 @@ public class PostManager : IPostManager
         }
     }
 
-    public async Task<List<ReadPostDTO>?> Filter(string title, string body, int[]? tagsIds, int limit, int offset)
+    public async Task<List<ReadPostDTO>?> Filter(string title, string body, int tagId, int limit, int offset)
     {
         try
         {
-            var posts = await _postRepo.Filter(title, body, tagsIds, limit, offset)
+            var posts = await _postRepo.Filter(title, body, tagId, limit, offset)
                 ?? throw new BusinessException(204, "No posts available by this filter");
 
             return posts.Select(post => new ReadPostDTO(

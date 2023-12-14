@@ -25,68 +25,18 @@ public class PostController : ControllerBase
         [FromQuery] string body = "",
         [FromQuery] int limit = -1,
         [FromQuery] int offset = -1,
-        [FromQuery] int[]? tagsIds = null
+        [FromQuery] int tagId = -1
         )
     {
         try
         {
-            var posts = await _postManager.Filter(title, body, tagsIds, limit, offset);
+            var posts = await _postManager.Filter(title, body, tagId, limit, offset);
             return posts;
         }
         catch (BusinessException ex)
         {
             return StatusCode(ex.StatusCode, ex.Message);
         }
-
-        //if (title != "")
-        //{
-        //    try
-        //    {
-        //        var posts = await _postManager.SearchInTitle(title);
-        //        return posts;
-        //    }
-        //    catch (BusinessException ex)
-        //    {
-        //        return StatusCode(ex.StatusCode, ex.Message);
-        //    }
-        //}
-        //else if (body != "")
-        //{
-        //    try
-        //    {
-        //        var posts = await _postManager.SearchInBody(body);
-        //        return posts;
-        //    }
-        //    catch (BusinessException ex)
-        //    {
-        //        return StatusCode(ex.StatusCode, ex.Message);
-        //    }
-        //}
-        //else if (text != "")
-        //{
-        //    try
-        //    {
-        //        // searches by text in title and body
-        //        var posts = await _postManager.SearchByText(text);
-        //        return posts;
-        //    }
-        //    catch (BusinessException ex)
-        //    {
-        //        return StatusCode(ex.StatusCode, ex.Message);
-        //    }
-        //}
-        //else
-        //{
-        //    try
-        //    {
-        //        var posts = await _postManager.GetAll();
-        //        return posts;
-        //    }
-        //    catch (BusinessException ex)
-        //    {
-        //        return StatusCode(ex.StatusCode, ex.Message);
-        //    }
-        //}
     }
 
     [HttpGet]

@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Blog.BL.Managers.Users
+namespace Blog.BL.Managers.Users;
+
+public class UserManager
 {
-    internal class UserManager
-    {
-    }
 }

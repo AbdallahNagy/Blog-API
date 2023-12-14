@@ -77,7 +77,7 @@ public class PostRepo : GenericRepo<Post>, IPostRepo
             .ToListAsync();
     }
 
-    async public Task<List<Post>?> Filter(string title, string body, int[]? tagsIds, int limit, int offset)
+    async public Task<List<Post>?> Filter(string title, string body, int tagId, int limit, int offset)
     {
         var posts = _context.Set<Post>()
             .OrderByDescending(p => p.CreatedAt);
@@ -87,18 +87,25 @@ public class PostRepo : GenericRepo<Post>, IPostRepo
             posts = (IOrderedQueryable<Post>)posts.Where(p => p.Title!.Contains(title));
         }
 
-        if(!string.IsNullOrEmpty(title))
+        if(!string.IsNullOrEmpty(body))
         {
             posts = (IOrderedQueryable<Post>)posts.Where(p => p.Body!.Contains(body));
         }
 
-        await Console.Out.WriteLineAsync(tagsIds!.ToString());
-        if (tagsIds != null && tagsIds.Length != 0)
+        if (tagId != -1)
         {
             posts = (IOrderedQueryable<Post>)posts
+                .Include(p => p.PostsTags)
+                    .ThenInclude(pt => pt.Tag)
+                .Where(p => p.PostsTags.Any(pt => pt.TagId == tagId));
+
+            /*
+            posts = (IOrderedQueryable<Post>)posts
+                .Include(p => p.PostsTags)
                 .Where(p => tagsIds
                     .All(tagId => p.PostsTags
                     .Any(pt => pt.TagId == tagId)));
+             */
         }
 
         if (limit > 0 && offset >= 0)
