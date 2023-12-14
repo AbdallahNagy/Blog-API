@@ -13,7 +13,7 @@ public interface IPostManager
     Task<List<ReadPostDTO>?> GetAll();
     Task<ReadPostDTO?> GetById(int id);
     Task<ReadPostDTO> Add(WritePostDTO post);
-    Task<ReadPostDTO> Update(WritePostDTO post, int id);
+    Task<ReadPostDTO> Update(UpdatePostDTO post, int id);
     Task Delete(int id);
     Task<List<ReadPostDTO>?> Filter(string title, string body, int tagId, int limit, int offset);
     Task<List<ReadPostDTO>?> SearchByTags(int[] tagsIds);

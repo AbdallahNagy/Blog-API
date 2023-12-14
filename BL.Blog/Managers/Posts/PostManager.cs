@@ -197,7 +197,7 @@ public class PostManager : IPostManager
         }
     }
 
-    async public Task<ReadPostDTO> Update(WritePostDTO updatePost, int id)
+    async public Task<ReadPostDTO> Update(UpdatePostDTO updatePost, int id)
     {
         var post = new Post
         {

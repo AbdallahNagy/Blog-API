@@ -41,7 +41,9 @@ public class PostRepo : GenericRepo<Post>, IPostRepo
 
         if (existingEntity == null) return null;
 
-        _context.Entry(existingEntity).CurrentValues.SetValues(entity);
+        existingEntity.Title = entity.Title;
+        existingEntity.Body = entity.Body;
+
         return existingEntity;
     }
 

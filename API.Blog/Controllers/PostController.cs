@@ -14,7 +14,7 @@ namespace Blog.API.Controllers;
 public class PostController : ControllerBase
 {
     private readonly IPostManager _postManager;
-    public PostController(IPostManager postManager, IPostRepo postRepo)
+    public PostController(IPostManager postManager)
     {
         _postManager = postManager;
     }
@@ -70,7 +70,7 @@ public class PostController : ControllerBase
 
     [HttpPatch]
     [Route("{id}")]
-    async public Task<ActionResult<ReadPostDTO>> Patch([FromBody] WritePostDTO post, int id)
+    async public Task<ActionResult<ReadPostDTO>> Patch([FromBody] UpdatePostDTO post, int id)
     {
         try
         {
