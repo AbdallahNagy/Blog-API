@@ -3,6 +3,7 @@ using Blog.BL.Managers.Posts;
 using Blog.BL.Managers.Tags;
 using Blog.DAL.Context;
 using Blog.DAL.Repos.Comments;
+using Blog.DAL.Repos.Likes;
 using Blog.DAL.Repos.Posts;
 using Blog.DAL.Repos.PostTag;
 using Blog.DAL.Repos.Tags;
@@ -28,6 +29,7 @@ builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<ITagRepo, TagRepo>();
 builder.Services.AddScoped<IPostTagRepo, PostTagRepo>();
 builder.Services.AddScoped<ICommentRepo, CommentRepo>();
+builder.Services.AddScoped<ILikeRepo, LikeRepo>();
 
 
 // Managers Registration

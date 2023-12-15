@@ -1,8 +1,10 @@
-﻿using Blog.BL.DTOs.Posts;
+﻿using Blog.BL.DTOs.Likes;
+using Blog.BL.DTOs.Posts;
 using Blog.BL.DTOs.PostTags;
 using Blog.BL.DTOs.Tags;
 using Blog.BL.Exception_Handling;
 using Blog.DAL.Models;
+using Blog.DAL.Repos.Likes;
 using Blog.DAL.Repos.Posts;
 using Blog.DAL.Repos.PostTag;
 using Blog.DAL.Repos.Tags;
@@ -15,12 +17,14 @@ public class PostManager : IPostManager
     private readonly IPostRepo _postRepo;
     private readonly ITagRepo _tagRepo;
     private readonly IPostTagRepo _postTagRepo;
+    private readonly ILikeRepo _likeRepo;
 
-    public PostManager(IPostRepo postRepo, ITagRepo tagRepo, IPostTagRepo postsTags)
+    public PostManager(IPostRepo postRepo, ITagRepo tagRepo, IPostTagRepo postsTags, ILikeRepo likeRepo)
     {
         _postRepo = postRepo;
         _tagRepo = tagRepo;
         _postTagRepo = postsTags;
+        _likeRepo = likeRepo;
     }
 
     async public Task<List<ReadPostDTO>?> GetAll()
@@ -253,132 +257,6 @@ public class PostManager : IPostManager
         }
     }
 
-    async public Task<List<ReadPostDTO>?> SearchByTags(int[] tagsIds)
-    {
-        try
-        {
-            var posts = await _postRepo.SearchByTags(tagsIds)
-                ?? throw new BusinessException(204, "No posts available by this filter");
-
-            List<ReadPostDTO> readPosts = posts.Select(post => new ReadPostDTO(
-                post!.Id,
-                post.Title,
-                post.Body,
-                post.TotalLikes,
-                post.AuthorId,
-                post.CreatedAt,
-                post.PostsTags
-                    .Select(pt => pt.Tag)
-                    .Select(t => new ReadTagDTO(
-                        t?.Id ?? 0,
-                        t?.Name ?? "",
-                        t?.CreatedAt ?? DateTime.MinValue)))).ToList();
-
-            return readPosts;
-        }
-        catch (BusinessException)
-        {
-            throw new BusinessException(204, "No posts available by this filter");
-        }
-        catch (Exception)
-        {
-            throw new BusinessException(500, "Interal Server Error");
-        }
-    }
-
-    async public Task<List<ReadPostDTO>?> SearchByText(string str)
-    {
-        try
-        {
-            List<Post> posts = await _postRepo.SearchByText(str) ?? throw new BusinessException(204, "No posts available by this filter");
-            List<ReadPostDTO> readPosts = posts.Select(post => new ReadPostDTO(
-                post.Id,
-                post.Title,
-                post.Body,
-                post.TotalLikes,
-                post.AuthorId,
-                post.CreatedAt,
-                post.PostsTags
-                    .Select(pt => pt.Tag)
-                    .Select(t => new ReadTagDTO(
-                        t?.Id ?? 0,
-                        t?.Name ?? "",
-                        t?.CreatedAt ?? DateTime.MinValue)))).ToList();
-
-            return readPosts;
-        }
-        catch (BusinessException)
-        {
-            throw new BusinessException(204, "No posts available by this filter");
-        }
-        catch (Exception)
-        {
-            throw new BusinessException(500, "Interal Server Error");
-        }
-    }
-
-    async public Task<List<ReadPostDTO>?> SearchInBody(string str)
-    {
-        try
-        {
-            List<Post> posts = await _postRepo.SearchInBody(str) ?? throw new BusinessException(204, "No posts available by this filter");
-            List<ReadPostDTO> readPosts = posts.Select(post => new ReadPostDTO(
-                post.Id,
-                post.Title,
-                post.Body,
-                post.TotalLikes,
-                post.AuthorId,
-                post.CreatedAt,
-                post.PostsTags
-                    .Select(pt => pt.Tag)
-                    .Select(t => new ReadTagDTO(
-                        t?.Id ?? 0,
-                        t?.Name ?? "",
-                        t?.CreatedAt ?? DateTime.MinValue)))).ToList();
-
-            return readPosts;
-        }
-        catch (BusinessException)
-        {
-            throw new BusinessException(204, "No posts available by this filter");
-        }
-        catch (Exception)
-        {
-            throw new BusinessException(500, "Interal Server Error");
-        }
-    }
-
-    async public Task<List<ReadPostDTO>?> SearchInTitle(string str)
-    {
-        try
-        {
-            List<Post> posts = await _postRepo.SearchInTitle(str) ?? throw new BusinessException(204, "No posts available by this filter");
-            List<ReadPostDTO> readPosts = posts.Select(post => new ReadPostDTO(
-                post.Id,
-                post.Title,
-                post.Body,
-                post.TotalLikes,
-                post.AuthorId,
-                post.CreatedAt,
-                post.PostsTags
-                    .Select(pt => pt.Tag)
-                    .Select(t => new ReadTagDTO(
-                        t?.Id ?? 0,
-                        t?.Name ?? "",
-                        t?.CreatedAt ?? DateTime.MinValue)))).ToList();
-
-            return readPosts;
-        }
-        catch (BusinessException)
-        {
-            throw new BusinessException(204, "No posts available by this filter");
-        }
-        catch (Exception)
-        {
-            throw new BusinessException(500, "Interal Server Error");
-        }
-    }
-
     public async Task<List<ReadPostDTO>?> Filter(string title, string body, int tagId, int limit, int offset)
     {
         try
@@ -399,6 +277,49 @@ public class PostManager : IPostManager
                         t?.Id ?? 0,
                         t?.Name ?? "",
                         t?.CreatedAt ?? DateTime.MinValue)))).ToList();
+        }
+        catch (BusinessException ex)
+        {
+            throw new BusinessException(ex.StatusCode, ex.Message);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            throw new BusinessException(500, "Internal Server Error");
+        }
+    }
+
+    public async Task<ReadPostDTO?> LikePost(int id, WriteLikeDTO writeLike)
+    {
+        var like = new Like
+        {
+            PostId = id,
+            UserId = writeLike.UserId,
+        };
+
+        try
+        {
+            var createdLike = await _likeRepo.Add(like);
+            await _likeRepo.SaveChanges();
+
+            var post = await _postRepo.AddLikeToPost(id)
+                ?? throw new BusinessException(404, "Record doesn't exist");
+
+            await _postRepo.SaveChanges();
+
+            return new ReadPostDTO(
+                post.Id, 
+                post.Title, 
+                post.Body, 
+                post.TotalLikes, 
+                post.AuthorId, 
+                post.CreatedAt, 
+                post.PostsTags
+                    .Select(pt => pt.Tag)
+                    .Select(t => new ReadTagDTO(
+                        t?.Id ?? 0,
+                        t?.Name ?? "",
+                        t?.CreatedAt ?? DateTime.MinValue)));
         }
         catch (BusinessException ex)
         {

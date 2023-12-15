@@ -1,4 +1,5 @@
-﻿using Blog.BL.DTOs.Posts;
+﻿using Blog.BL.DTOs.Likes;
+using Blog.BL.DTOs.Posts;
 
 namespace Blog.BL.Managers.Posts;
 public interface IPostManager
@@ -9,8 +10,5 @@ public interface IPostManager
     Task<ReadPostDTO> Update(UpdatePostDTO post, int id);
     Task Delete(int id);
     Task<List<ReadPostDTO>?> Filter(string title, string body, int tagId, int limit, int offset);
-    Task<List<ReadPostDTO>?> SearchByTags(int[] tagsIds);
-    Task<List<ReadPostDTO>?> SearchByText(string str);
-    Task<List<ReadPostDTO>?> SearchInTitle(string str);
-    Task<List<ReadPostDTO>?> SearchInBody(string str);
+    Task<ReadPostDTO?> LikePost(int id, WriteLikeDTO like);
 }

@@ -1,4 +1,5 @@
-﻿using Blog.BL.DTOs.Posts;
+﻿using Blog.BL.DTOs.Likes;
+using Blog.BL.DTOs.Posts;
 using Blog.BL.Exception_Handling;
 using Blog.BL.Managers.Posts;
 using Microsoft.AspNetCore.Mvc;
@@ -87,6 +88,21 @@ public class PostController : ControllerBase
         {
             await _postManager.Delete(id);
             return Ok();
+        }
+        catch (BusinessException ex)
+        {
+            return StatusCode(ex.StatusCode, ex.Message);
+        }
+    }
+
+    [HttpPost]
+    [Route("{id}/like")]
+    async public Task<ActionResult<ReadPostDTO>> Like([FromBody] WriteLikeDTO writeLike, int id)
+    {
+        try
+        {
+            var post = await _postManager.LikePost(id, writeLike);
+            return Ok(post);
         }
         catch (BusinessException ex)
         {

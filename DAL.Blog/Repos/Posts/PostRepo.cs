@@ -30,7 +30,7 @@ public class PostRepo : GenericRepo<Post>, IPostRepo
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public override async Task<Post?> Update(int id, Post entity)
+    override async public Task<Post?> Update(int id, Post entity)
     {
         var existingEntity = await _context.Set<Post>()
             .Include(p => p.PostsTags)
@@ -43,38 +43,6 @@ public class PostRepo : GenericRepo<Post>, IPostRepo
         existingEntity.Body = entity.Body;
 
         return existingEntity;
-    }
-
-    async public Task<List<Post?>?> SearchByTags(int[] tagsIds)
-    {
-        return await _context.Set<PostsTags>()
-            .Where(postTag => tagsIds.Contains(postTag.TagId))
-            .Select(postTag => postTag.Post)
-            .ToListAsync();
-    }
-
-    async public Task<List<Post>?> SearchByText(string str)
-    {
-        return await _context.Set<Post>()
-            .Where(post => post.Title!.Contains(str) || post.Body!.Contains(str))
-            .AsNoTracking()
-            .ToListAsync();
-    }
-
-    async public Task<List<Post>?> SearchInTitle(string str)
-    {
-        return await _context.Set<Post>()
-            .Where(post => post.Title!.Contains(str))
-            .AsNoTracking()
-            .ToListAsync();
-    }
-
-    async public Task<List<Post>?> SearchInBody(string str)
-    {
-        return await _context.Set<Post>()
-            .Where(post => post.Body!.Contains(str))
-            .AsNoTracking()
-            .ToListAsync();
     }
 
     async public Task<List<Post>?> Filter(string title, string body, int tagId, int limit, int offset)
@@ -98,14 +66,6 @@ public class PostRepo : GenericRepo<Post>, IPostRepo
                 .Include(p => p.PostsTags)
                     .ThenInclude(pt => pt.Tag)
                 .Where(p => p.PostsTags.Any(pt => pt.TagId == tagId));
-
-            /*
-            posts = (IOrderedQueryable<Post>)posts
-                .Include(p => p.PostsTags)
-                .Where(p => tagsIds
-                    .All(tagId => p.PostsTags
-                    .Any(pt => pt.TagId == tagId)));
-             */
         }
 
         if (limit > 0 && offset >= 0)
@@ -114,5 +74,15 @@ public class PostRepo : GenericRepo<Post>, IPostRepo
         }
 
         return await posts.ToListAsync();
+    }
+
+    public async Task<Post?> AddLikeToPost(int id)
+    {
+        var post = await Get(id);
+        if (post == null) return null;
+
+        post.TotalLikes++;
+
+        return post;
     }
 }
