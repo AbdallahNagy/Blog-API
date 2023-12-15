@@ -79,7 +79,7 @@ namespace Blog.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TotalLikes");
+                    b.ToTable("Likes");
                 });
 
             modelBuilder.Entity("Blog.DAL.Models.Post", b =>

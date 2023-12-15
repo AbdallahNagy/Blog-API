@@ -321,6 +321,10 @@ public class PostManager : IPostManager
                         t?.Name ?? "",
                         t?.CreatedAt ?? DateTime.MinValue)));
         }
+        catch (ReferenceConstraintException)
+        {
+            throw new BusinessException(400, "ReferenceConstraintException: Can't add a like to a post with a non-existing user");
+        }
         catch (BusinessException ex)
         {
             throw new BusinessException(ex.StatusCode, ex.Message);

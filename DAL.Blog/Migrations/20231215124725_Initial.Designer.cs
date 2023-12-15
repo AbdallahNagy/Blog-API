@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blog.DAL.Migrations
 {
     [DbContext(typeof(BlogDbContext))]
-    [Migration("20231202205427_Change-Likes-Column-Name")]
-    partial class ChangeLikesColumnName
+    [Migration("20231215124725_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,6 +45,7 @@ namespace Blog.DAL.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -81,7 +82,7 @@ namespace Blog.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TotalLikes");
+                    b.ToTable("Likes");
                 });
 
             modelBuilder.Entity("Blog.DAL.Models.Post", b =>
@@ -112,6 +113,8 @@ namespace Blog.DAL.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
+
+                    b.HasIndex("CreatedAt");
 
                     b.ToTable("Posts");
                 });
@@ -145,9 +148,13 @@ namespace Blog.DAL.Migrations
                         .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
 
                     b.ToTable("Tags");
                 });
@@ -371,7 +378,9 @@ namespace Blog.DAL.Migrations
 
                     b.HasOne("Blog.DAL.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Post");
 

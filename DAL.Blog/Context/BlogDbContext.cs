@@ -8,7 +8,7 @@ namespace Blog.DAL.Context;
 public class BlogDbContext : IdentityDbContext<User>
 {
     public DbSet<Comment> Comments { get; set; }
-    public DbSet<Like> TotalLikes { get; set; }
+    public DbSet<Like> Likes { get; set; }
     public DbSet<Post> Posts { get; set; }
     public DbSet<PostsTags> PostsTags { get; set; }
     public DbSet<Tag> Tags { get; set; }
