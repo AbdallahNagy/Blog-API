@@ -1,4 +1,6 @@
-﻿using Blog.DAL.Models;
+﻿using Blog.BL.DTOs.Users;
+using Blog.DAL.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.API.Controllers
@@ -7,42 +9,16 @@ namespace Blog.API.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly List<Post> Posts = new()
-        {
-            new Post { Id = 1, Title = "First Post", Body = "This is the body of the first post.", TotalLikes = 10, AuthorId = "user1" },
-            new Post { Id = 2, Title = "Second Post", Body = "This is the body of the second post.", TotalLikes = 5, AuthorId = "user2" },
-            // Add more posts as needed
-        };
+        private readonly UserManager<User> _userManager;
 
-        [HttpGet]
-        public ActionResult<IEnumerable<Post>> GetAll()
+        public UserController(UserManager<User> userManager)
         {
-            return Ok(Posts);
-        }
-
-        [HttpGet]
-        [Route("{id}")]
-        public ActionResult<Post> Get(int id)
-        {
-            return Ok(Posts[id]);
+            _userManager = userManager;
         }
 
         [HttpPost]
-        public ActionResult<Post> Post(Post post)
-        {
-            return Ok(post);
-        }
-
-        [HttpPatch]
-        [Route("{id}")]
-        public ActionResult<Post> Patch(Post post)
-        {
-            return Patch(post);
-        }
-
-        [HttpDelete]
-        [Route("{id}")]
-        public ActionResult Delete(int id)
+        [Route("register")]
+        public ActionResult Post([FromBody] RegistrationDTO userData)
         {
             return Ok();
         }
