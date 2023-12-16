@@ -3,29 +3,21 @@ using Blog.BL.Exception_Handling;
 using Blog.BL.Managers.Tags;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Blog.API.Controllers
+namespace Blog.API.Controllers;
+
+[Route("api/v1/tags")]
+[ApiController]
+public class TagController : ControllerBase
 {
-    [Route("api/v1/tags")]
-    [ApiController]
-    public class TagController : ControllerBase
+    private readonly ITagManager _tagManager;
+    public TagController(ITagManager tagManager)
     {
-        private readonly ITagManager _tagManager;
-        public TagController(ITagManager tagManager)
-        {
-            _tagManager = tagManager;
-        }
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<ReadTagDTO>>> GetAll()
-        {
-            try
-            {
-                var tags = await _tagManager.GetAll();
-                return tags!.ToList();
-            }
-            catch (BusinessException ex)
-            {
-                return StatusCode(ex.StatusCode, ex.Message);
-            }
-        }
+        _tagManager = tagManager;
+    }
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<ReadTagDTO>>> GetAll()
+    {
+        var tags = await _tagManager.GetAll();
+        return tags!.ToList();
     }
 }

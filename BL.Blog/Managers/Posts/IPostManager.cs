@@ -4,7 +4,6 @@ using Blog.BL.DTOs.Posts;
 namespace Blog.BL.Managers.Posts;
 public interface IPostManager
 {
-    Task<List<ReadPostDTO>?> GetAll();
     Task<ReadPostDTO?> GetById(int id);
     Task<ReadPostDTO> Add(WritePostDTO post);
     Task<ReadPostDTO> Update(UpdatePostDTO post, int id);

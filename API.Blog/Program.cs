@@ -1,3 +1,4 @@
+using Blog.API.Middlewares;
 using Blog.BL.Managers.Comments;
 using Blog.BL.Managers.Posts;
 using Blog.BL.Managers.Tags;
@@ -38,6 +39,10 @@ builder.Services.AddScoped<ICommentManager, CommentManager>();
 builder.Services.AddScoped<ITagManager, TagManager>();
 
 
+// Middlewares
+builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -50,6 +55,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
 app.MapControllers();
 
