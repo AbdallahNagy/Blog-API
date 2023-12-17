@@ -1,10 +1,12 @@
 ﻿using Blog.BL.DTOs.Likes;
 using Blog.BL.DTOs.Posts;
 using Blog.BL.Managers.Posts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.API.Controllers;
 
+[Authorize]
 [Route("api/v1/posts")]
 [ApiController]
 public class PostController : ControllerBase

@@ -1,26 +1,39 @@
 ﻿using Blog.BL.DTOs.Users;
+using Blog.BL.Managers.Users;
 using Blog.DAL.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Blog.API.Controllers
+namespace Blog.API.Controllers;
+
+[Route("api/v1/users")]
+[ApiController]
+public class UserController : ControllerBase
 {
-    [Route("api/v1/users")]
-    [ApiController]
-    public class UserController : ControllerBase
+    private readonly IUserManager _userManager;
+
+    public UserController(IUserManager userManager)
     {
-        private readonly UserManager<User> _userManager;
+        _userManager = userManager;
+    }
 
-        public UserController(UserManager<User> userManager)
-        {
-            _userManager = userManager;
-        }
+    [HttpPost]
+    [Route("register")]
+    public async Task<ActionResult> Post([FromBody] RegistrationDTO userData)
+    {
+        if (!ModelState.IsValid) return BadRequest();
 
-        [HttpPost]
-        [Route("register")]
-        public ActionResult Post([FromBody] RegistrationDTO userData)
-        {
-            return Ok();
-        }
+        var response = await _userManager.Registration(userData);
+        return Ok(response);
+    }
+
+    [HttpPost]
+    [Route("login")]
+    public async Task<ActionResult> Post([FromBody] LoginDTO userData)
+    {
+        if (!ModelState.IsValid) return BadRequest();
+
+        var response = await _userManager.Login(userData);
+        return Ok(response);
     }
 }

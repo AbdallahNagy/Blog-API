@@ -45,16 +45,17 @@ public class GlobalExceptionHandlingMiddleware : IMiddleware
             ProblemDetails problem = new ()
             {
                 Status = ex.StatusCode, 
-                Detail = ex.Message
+                Title = ex.Message,
+                Detail = ex.Details?.ToString()
             };
 
             string json = JsonSerializer.Serialize(problem);
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsync(json);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            //_logger.LogError(ex.Message);
+            await Console.Out.WriteLineAsync(ex.Message);
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
         }
     }

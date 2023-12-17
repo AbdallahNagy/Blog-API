@@ -1,8 +1,11 @@
+using Blog.API.Configurations;
 using Blog.API.Middlewares;
 using Blog.BL.Managers.Comments;
 using Blog.BL.Managers.Posts;
 using Blog.BL.Managers.Tags;
+using Blog.BL.Managers.Users;
 using Blog.DAL.Context;
+using Blog.DAL.Models;
 using Blog.DAL.Repos.Comments;
 using Blog.DAL.Repos.Likes;
 using Blog.DAL.Repos.Posts;
@@ -11,6 +14,7 @@ using Blog.DAL.Repos.Tags;
 using Blog.DAL.Repos.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -27,6 +31,10 @@ builder.Services.AddSwaggerGen();
 var connectionString = builder.Configuration.GetConnectionString("connStr");
 builder.Services.AddDbContext<BlogDbContext>(options => options.UseSqlServer(connectionString));
 
+builder.Services.Configure<JWTConfig>(builder.Configuration.GetSection("JWTConfig:SecretKey"));
+ 
+builder.Services.AddDefaultIdentity<User>().AddEntityFrameworkStores<BlogDbContext>();
+
 // Repos Registration
 builder.Services.AddScoped<IPostRepo, PostRepo>();
 builder.Services.AddScoped<IUserRepo, UserRepo>();
@@ -40,6 +48,7 @@ builder.Services.AddScoped<ILikeRepo, LikeRepo>();
 builder.Services.AddScoped<IPostManager, PostManager>();
 builder.Services.AddScoped<ICommentManager, CommentManager>();
 builder.Services.AddScoped<ITagManager, TagManager>();
+builder.Services.AddScoped<IUserManager, BlogUserManager>();
 
 
 // Middlewares
