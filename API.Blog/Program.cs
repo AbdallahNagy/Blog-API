@@ -10,6 +10,7 @@ using Blog.DAL.Repos.Comments;
 using Blog.DAL.Repos.Likes;
 using Blog.DAL.Repos.Posts;
 using Blog.DAL.Repos.PostTag;
+using Blog.DAL.Repos.RefreshTokens;
 using Blog.DAL.Repos.Tags;
 using Blog.DAL.Repos.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -42,6 +43,7 @@ builder.Services.AddScoped<ITagRepo, TagRepo>();
 builder.Services.AddScoped<IPostTagRepo, PostTagRepo>();
 builder.Services.AddScoped<ICommentRepo, CommentRepo>();
 builder.Services.AddScoped<ILikeRepo, LikeRepo>();
+builder.Services.AddScoped<IRefreshTokenRepo, RefreshTokenRepo>();
 
 
 // Managers Registration
@@ -55,6 +57,20 @@ builder.Services.AddScoped<IUserManager, BlogUserManager>();
 builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
 
 
+// convert key to array of bytes
+var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JWTConfig:SecretKey").Value ?? "ld2e5nvi1adkq");
+
+var tokenValidatoinParameters = new TokenValidationParameters()
+{
+    ValidateIssuerSigningKey = true,
+    IssuerSigningKey = new SymmetricSecurityKey(key),
+    ValidateIssuer = false, // for dev
+    ValidateAudience = false, // for dev
+    RequireExpirationTime = false,// for dev
+    ValidateLifetime = true,
+};
+
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -63,20 +79,8 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(jwt =>
 {
-    // convert key to array of bytes
-    var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JWTConfig:SecretKey").Value ?? "ld2e5nvi1adkq");
-
     jwt.SaveToken = true;
-    jwt.TokenValidationParameters = new TokenValidationParameters()
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
-        ValidateIssuer = false, // for dev
-        ValidateAudience = false, // for dev
-        RequireExpirationTime = false,// for dev
-        ValidateLifetime = true,
-    };
-
+    jwt.TokenValidationParameters = tokenValidatoinParameters;
 });
 
 var app = builder.Build();

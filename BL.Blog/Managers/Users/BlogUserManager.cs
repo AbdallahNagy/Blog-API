@@ -1,6 +1,7 @@
 ﻿using Blog.BL.DTOs.Users;
 using Blog.BL.Exception_Handling;
 using Blog.DAL.Models;
+using Blog.DAL.Repos.RefreshTokens;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -15,16 +16,18 @@ public class BlogUserManager : IUserManager
 {
     private readonly UserManager<User> _userManager;
     private readonly IConfiguration _configuration;
+    private readonly IRefreshTokenRepo _refreshTokenRepo;
 
-    public BlogUserManager(UserManager<User> userManager, IConfiguration configuration)
+    public BlogUserManager(UserManager<User> userManager, IConfiguration configuration, IRefreshTokenRepo refreshTokenRepo)
     {
         _userManager = userManager;
         _configuration = configuration;
+        _refreshTokenRepo = refreshTokenRepo;
     }
 
     public async Task<TokenRespnseDTO> Registration(RegistrationDTO userData)
     {
-		var userExist = await _userManager.FindByEmailAsync(userData.Email);
+        var userExist = await _userManager.FindByEmailAsync(userData.Email);
 
         if (userExist != null) throw new BusinessException(404, "Email Already Exist.");
 
@@ -44,15 +47,15 @@ public class BlogUserManager : IUserManager
 
         for (int i = 0; i < errors.Count; i++)
         {
-            errorsSerialized.Append($"[{i+1}] {errors[i]} ");
+            errorsSerialized.Append($"[{i + 1}] {errors[i]} ");
         }
 
         if (!isUserCreated.Succeeded) throw new BusinessException(500, "Internal Server Error: Couldn't create user.", errorsSerialized.ToString());
 
         // generate user token
-        var token = GenerateToken(newUser);
+        var tokenResponse = GenerateToken(newUser);
 
-        return await Task.FromResult(new TokenRespnseDTO(token));
+        return await tokenResponse;
     }
 
     public async Task<TokenRespnseDTO> Login(LoginDTO userData)
@@ -64,18 +67,17 @@ public class BlogUserManager : IUserManager
 
         if (!isCorrect) throw new BusinessException(404, "Invalid Email or Passwod");
 
-        var token = GenerateToken(existingUser);
+        var tokenResponse = GenerateToken(existingUser);
 
-        return await Task.FromResult(new TokenRespnseDTO(token));
+        return await tokenResponse;
     }
 
-    private string GenerateToken(User user)
+    private async Task<TokenRespnseDTO> GenerateToken(User user)
     {
         var jwtTokenHandler = new JwtSecurityTokenHandler();
 
         var key = Encoding.UTF8.GetBytes(_configuration.GetSection("JWTConfig:SecretKey").Value ?? "ld2e5nvi1adkq");
 
-        // token descriptor
         var tokenDescriptor = new SecurityTokenDescriptor()
         {
             Subject = new ClaimsIdentity(new[]
@@ -86,29 +88,35 @@ public class BlogUserManager : IUserManager
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToUniversalTime().ToString())
             }),
-            Expires = DateTime.Now.AddHours(1),
+            Expires = DateTime.UtcNow.Add(TimeSpan.Parse(_configuration.GetSection("JWTConfig:ExpiryTimeFrame").Value ?? "00:01:00")),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
         };
 
         var securityToken = jwtTokenHandler.CreateToken(tokenDescriptor);
         var token = jwtTokenHandler.WriteToken(securityToken);
 
-        return token;
+        var refreshToken = new RefreshToken
+        {
+            Token = RandonStringGeneration(23),
+            JwtId = securityToken.Id,
+            CreatedAt = DateTime.UtcNow,
+            ExpiresOn = DateTime.UtcNow.AddMonths(6),
+            UserId = user.Id
+        };
+
+        await _refreshTokenRepo.Add(refreshToken);
+        await _refreshTokenRepo.SaveChanges();
+
+        return new TokenRespnseDTO(token, refreshToken.Token);
     }
 
-    private RefreshToken GenerateRefreshToken()
+    private static string RandonStringGeneration(int length)
     {
-        var randomNumber = new byte[32];
-
-        using var generator = new RNGCryptoServiceProvider();
-
-        generator.GetBytes(randomNumber);
-
-        return new RefreshToken()
-        {
-            Token = Convert.ToBase64String(randomNumber),
-            ExpiresOn = DateTime.UtcNow.AddDays(10),
-            CreatedAt = DateTime.UtcNow
-        };
+        var random = new Random();
+        var chars = "_ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890qwretaysduifogplkjhnvmnzxc";
+        return new string(Enumerable
+            .Repeat(chars, length)
+            .Select(s => s[random.Next(s.Length)])
+            .ToArray());
     }
 }

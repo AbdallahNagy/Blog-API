@@ -12,6 +12,7 @@ public class BlogDbContext : IdentityDbContext<User>
     public DbSet<Post> Posts { get; set; }
     public DbSet<PostsTags> PostsTags { get; set; }
     public DbSet<Tag> Tags { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
     public BlogDbContext(DbContextOptions<BlogDbContext> options) : base(options) { }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -73,7 +74,5 @@ public class BlogDbContext : IdentityDbContext<User>
             .Property(e => e.CreatedAt)
             .HasDefaultValueSql("GETDATE()");
 
-        modelBuilder.Entity<User>()
-            .OwnsMany(u => u.RefreshTokens);
     }
 }

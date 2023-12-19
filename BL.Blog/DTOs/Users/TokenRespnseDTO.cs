@@ -6,13 +6,18 @@ public record TokenRespnseDTO
 {
     public string? Token { get; }
 
-    [JsonIgnore]
     public string? RefreshToken { get; }
     public DateTime RefreshTokenExpiration { get; }
 
     public TokenRespnseDTO(string? token)
     {
         Token = token;
+    }
+
+    public TokenRespnseDTO(string? token, string? refreshToken)
+    {
+        Token = token;
+        RefreshToken = refreshToken;
     }
 
     public TokenRespnseDTO(string? token, DateTime refreshTokenExpiration)
