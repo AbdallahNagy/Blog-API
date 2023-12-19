@@ -70,6 +70,8 @@ var tokenValidatoinParameters = new TokenValidationParameters()
     ValidateLifetime = true,
 };
 
+builder.Services.AddSingleton(tokenValidatoinParameters);
+
 
 builder.Services.AddAuthentication(options =>
 {

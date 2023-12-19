@@ -36,4 +36,14 @@ public class UserController : ControllerBase
         var response = await _userManager.Login(userData);
         return Ok(response);
     }
+
+    //[HttpPost]
+    //[Route("tokens")]
+    //public async Task<ActionResult> Tokens([FromBody] TokenRequestDTO tokenRequest)
+    //{
+    //    if (!ModelState.IsValid) return BadRequest();
+
+    //    var response = await _userManager.Tokens(tokenRequest);
+    //    return Ok(response);
+    //}
 }

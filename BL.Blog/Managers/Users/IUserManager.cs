@@ -6,4 +6,5 @@ public interface IUserManager
 {
     Task<TokenRespnseDTO> Registration(RegistrationDTO registration);
     Task<TokenRespnseDTO> Login(LoginDTO userData);
+    //Task<TokenRespnseDTO> Tokens(TokenRequestDTO tokenRequest);
 }
