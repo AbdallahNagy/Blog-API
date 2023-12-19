@@ -6,4 +6,4 @@ using System.Threading.Tasks;
 
 namespace Blog.BL.DTOs.Users;
 
-public record TokenRequest(string Token, string RefreshToken);
+public record TokenRequestDTO(string Token, string RefreshToken);

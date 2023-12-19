@@ -5,6 +5,7 @@ using Blog.DAL.Repos.RefreshTokens;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -17,12 +18,17 @@ public class BlogUserManager : IUserManager
     private readonly UserManager<User> _userManager;
     private readonly IConfiguration _configuration;
     private readonly IRefreshTokenRepo _refreshTokenRepo;
+    private readonly TokenValidationParameters _tokenValidationParameters;
 
-    public BlogUserManager(UserManager<User> userManager, IConfiguration configuration, IRefreshTokenRepo refreshTokenRepo)
+    public BlogUserManager(UserManager<User> userManager, 
+        IConfiguration configuration, 
+        IRefreshTokenRepo refreshTokenRepo, 
+        TokenValidationParameters tokenValidationParameters)
     {
         _userManager = userManager;
         _configuration = configuration;
         _refreshTokenRepo = refreshTokenRepo;
+        _tokenValidationParameters = tokenValidationParameters;
     }
 
     public async Task<TokenRespnseDTO> Registration(RegistrationDTO userData)
@@ -70,6 +76,29 @@ public class BlogUserManager : IUserManager
         var tokenResponse = GenerateToken(existingUser);
 
         return await tokenResponse;
+    }
+
+    public TokenRespnseDTO Tokens(TokenRequestDTO tokenRequest)
+    {
+        var jwtTokenHandler = new JwtSecurityTokenHandler();
+
+        try
+        {
+            _tokenValidationParameters.ValidateLifetime = false;
+
+            var tokenVerification = jwtTokenHandler.ValidateToken(tokenRequest.Token, _tokenValidationParameters, out var validatedToken);
+
+            if(validatedToken is JwtSecurityToken jwtSecurityToken)
+            {
+                var result = jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
+
+        return new TokenRespnseDTO("","");
     }
 
     private async Task<TokenRespnseDTO> GenerateToken(User user)
