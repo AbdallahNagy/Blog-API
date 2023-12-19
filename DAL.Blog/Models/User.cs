@@ -12,4 +12,5 @@ public class User : IdentityUser
 
     [Column(TypeName = "datetime2")]
     public DateTime CreatedAt { get; set; }
+    public List<RefreshToken>? RefreshTokens { get; set; }
 }

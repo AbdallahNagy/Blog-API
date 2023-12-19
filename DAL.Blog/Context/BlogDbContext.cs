@@ -72,5 +72,8 @@ public class BlogDbContext : IdentityDbContext<User>
         modelBuilder.Entity<Tag>()
             .Property(e => e.CreatedAt)
             .HasDefaultValueSql("GETDATE()");
+
+        modelBuilder.Entity<User>()
+            .OwnsMany(u => u.RefreshTokens);
     }
 }

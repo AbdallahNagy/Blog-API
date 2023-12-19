@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Blog.BL.Managers.Users;
@@ -49,7 +50,7 @@ public class BlogUserManager : IUserManager
         if (!isUserCreated.Succeeded) throw new BusinessException(500, "Internal Server Error: Couldn't create user.", errorsSerialized.ToString());
 
         // generate user token
-        var token = GenerateJWTToken(newUser);
+        var token = GenerateToken(newUser);
 
         return await Task.FromResult(new TokenRespnseDTO(token));
     }
@@ -63,12 +64,12 @@ public class BlogUserManager : IUserManager
 
         if (!isCorrect) throw new BusinessException(404, "Invalid Email or Passwod");
 
-        var token = GenerateJWTToken(existingUser);
+        var token = GenerateToken(existingUser);
 
         return await Task.FromResult(new TokenRespnseDTO(token));
     }
 
-    private string GenerateJWTToken(User user)
+    private string GenerateToken(User user)
     {
         var jwtTokenHandler = new JwtSecurityTokenHandler();
 
@@ -93,5 +94,21 @@ public class BlogUserManager : IUserManager
         var token = jwtTokenHandler.WriteToken(securityToken);
 
         return token;
+    }
+
+    private RefreshToken GenerateRefreshToken()
+    {
+        var randomNumber = new byte[32];
+
+        using var generator = new RNGCryptoServiceProvider();
+
+        generator.GetBytes(randomNumber);
+
+        return new RefreshToken()
+        {
+            Token = Convert.ToBase64String(randomNumber),
+            ExpiresOn = DateTime.UtcNow.AddDays(10),
+            CreatedAt = DateTime.UtcNow
+        };
     }
 }
