@@ -10,5 +10,5 @@ namespace Blog.DAL.Repos.RefreshTokens;
 
 public interface IRefreshTokenRepo : IGenericRepo<RefreshToken>
 {
-
+    public Task<RefreshToken?> GetRefreshToken(string refreshToken);
 }

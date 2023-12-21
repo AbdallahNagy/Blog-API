@@ -20,9 +20,9 @@ public class BlogUserManager : IUserManager
     private readonly IRefreshTokenRepo _refreshTokenRepo;
     private readonly TokenValidationParameters _tokenValidationParameters;
 
-    public BlogUserManager(UserManager<User> userManager, 
-        IConfiguration configuration, 
-        IRefreshTokenRepo refreshTokenRepo, 
+    public BlogUserManager(UserManager<User> userManager,
+        IConfiguration configuration,
+        IRefreshTokenRepo refreshTokenRepo,
         TokenValidationParameters tokenValidationParameters)
     {
         _userManager = userManager;
@@ -78,27 +78,56 @@ public class BlogUserManager : IUserManager
         return await tokenResponse;
     }
 
-    public TokenRespnseDTO Tokens(TokenRequestDTO tokenRequest)
+    public async Task<TokenRespnseDTO?> VerifyGenerateTokens(TokenRequestDTO tokenRequest)
     {
         var jwtTokenHandler = new JwtSecurityTokenHandler();
 
-        try
-        {
-            _tokenValidationParameters.ValidateLifetime = false;
+        //_tokenValidationParameters.ValidateLifetime = false; // for dev only
 
-            var tokenVerification = jwtTokenHandler.ValidateToken(tokenRequest.Token, _tokenValidationParameters, out var validatedToken);
+        var tokenVerification = jwtTokenHandler.ValidateToken(tokenRequest.Token, _tokenValidationParameters, out var validatedToken);
 
-            if(validatedToken is JwtSecurityToken jwtSecurityToken)
-            {
-                var result = jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256);
-            }
-        }
-        catch (Exception ex)
+        // adding an extra layer of assurance that the token was generated using the specified algorithm
+        if (validatedToken is JwtSecurityToken jwtSecurityToken)
         {
-            throw;
+            var isUsingTheSameAlg = jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
+                StringComparison.InvariantCultureIgnoreCase);
+
+            if (isUsingTheSameAlg == false) return null;
         }
 
-        return new TokenRespnseDTO("","");
+        var utcExpiryDate = long.Parse(tokenVerification.Claims
+            .FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Exp)!.Value);
+
+        var expiryDate = UnixTimeStampToDateTime(utcExpiryDate);
+
+        await Console.Out.WriteLineAsync((expiryDate > DateTime.Now).ToString());
+        if (expiryDate > DateTime.Now) throw new BusinessException(404, "Expired Token");
+
+        var storedToken = await _refreshTokenRepo.GetRefreshToken(tokenRequest.RefreshToken)
+            ?? throw new BusinessException(404, "Invalid Tokens");
+
+        if (!storedToken.IsActive) throw new BusinessException(404, "Invalid Tokens");
+
+        var jti = tokenVerification.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti)!.Value;
+
+        if (storedToken.JwtId != jti) throw new BusinessException(404, "Invalid Tokens");
+        if (storedToken.IsUsed) throw new BusinessException(404, "Invalid Tokens");
+
+        storedToken.IsUsed = true;
+        await _refreshTokenRepo.Update(storedToken.Id, storedToken);
+        await _refreshTokenRepo.SaveChanges();
+
+        var dbUser = await _userManager.FindByIdAsync(storedToken.UserId)
+            ?? throw new BusinessException(404, "User isn't attached to the refresh token");
+
+        return await GenerateToken(dbUser);
+    }
+
+    private static DateTime UnixTimeStampToDateTime(long unixTimeStamp)
+    {
+        var dateTimeVal = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+        dateTimeVal = dateTimeVal.AddSeconds(unixTimeStamp);
+        return dateTimeVal;
     }
 
     private async Task<TokenRespnseDTO> GenerateToken(User user)
