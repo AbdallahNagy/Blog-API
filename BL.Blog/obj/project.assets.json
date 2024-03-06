@@ -2953,19 +2953,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\abdallah.nagy\\.nuget\\packages\\": {}
+    "C:\\Users\\Abdallah Nagy\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\dotnet stack\\dotnet projects\\Blog API\\BL.Blog\\Blog.BL.csproj",
+      "projectUniqueName": "C:\\src dev\\Blog-API\\BL.Blog\\Blog.BL.csproj",
       "projectName": "Blog.BL",
-      "projectPath": "D:\\dotnet stack\\dotnet projects\\Blog API\\BL.Blog\\Blog.BL.csproj",
-      "packagesPath": "C:\\Users\\abdallah.nagy\\.nuget\\packages\\",
-      "outputPath": "D:\\dotnet stack\\dotnet projects\\Blog API\\BL.Blog\\obj\\",
+      "projectPath": "C:\\src dev\\Blog-API\\BL.Blog\\Blog.BL.csproj",
+      "packagesPath": "C:\\Users\\Abdallah Nagy\\.nuget\\packages\\",
+      "outputPath": "C:\\src dev\\Blog-API\\BL.Blog\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\abdallah.nagy\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Abdallah Nagy\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -2979,8 +2979,8 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "D:\\dotnet stack\\dotnet projects\\Blog API\\DAL.Blog\\Blog.DAL.csproj": {
-              "projectPath": "D:\\dotnet stack\\dotnet projects\\Blog API\\DAL.Blog\\Blog.DAL.csproj"
+            "C:\\src dev\\Blog-API\\DAL.Blog\\Blog.DAL.csproj": {
+              "projectPath": "C:\\src dev\\Blog-API\\DAL.Blog\\Blog.DAL.csproj"
             }
           }
         }
@@ -2989,6 +2989,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -3016,7 +3021,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.304\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.200\\RuntimeIdentifierGraph.json"
       }
     }
   }

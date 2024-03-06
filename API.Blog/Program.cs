@@ -15,7 +15,6 @@ using Blog.DAL.Repos.Tags;
 using Blog.DAL.Repos.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -33,7 +32,7 @@ var connectionString = builder.Configuration.GetConnectionString("connStr");
 builder.Services.AddDbContext<BlogDbContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.Configure<JWTConfig>(builder.Configuration.GetSection("JWTConfig:SecretKey"));
- 
+
 builder.Services.AddDefaultIdentity<User>().AddEntityFrameworkStores<BlogDbContext>();
 
 // Repos Registration

@@ -8,4 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Blog.DAL
-build_property.ProjectDir = D:\dotnet stack\dotnet projects\Blog API\DAL.Blog\
+build_property.ProjectDir = C:\src dev\Blog-API\DAL.Blog\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
