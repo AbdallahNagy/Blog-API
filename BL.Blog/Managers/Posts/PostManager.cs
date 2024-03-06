@@ -8,7 +8,6 @@ using Blog.DAL.Repos.Likes;
 using Blog.DAL.Repos.Posts;
 using Blog.DAL.Repos.PostTag;
 using Blog.DAL.Repos.Tags;
-using EntityFramework.Exceptions.Common;
 
 namespace Blog.BL.Managers.Posts;
 
@@ -26,7 +25,8 @@ public class PostManager : IPostManager
         _postTagRepo = postsTags;
         _likeRepo = likeRepo;
     }
-
+    // cant find post
+    // 
     async public Task<ReadPostDTO?> GetById(int id)
     {
         var post = await _postRepo.Get(id) ?? throw new BusinessException(404, "Can't find post by this id");
