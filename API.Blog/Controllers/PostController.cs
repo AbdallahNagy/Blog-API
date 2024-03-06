@@ -1,5 +1,6 @@
 ﻿using Blog.BL.DTOs.Likes;
 using Blog.BL.DTOs.Posts;
+using Blog.BL.Managers.Likes;
 using Blog.BL.Managers.Posts;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,9 +11,12 @@ namespace Blog.API.Controllers;
 public class PostController : ControllerBase
 {
     private readonly IPostManager _postManager;
-    public PostController(IPostManager postManager)
+    private readonly ILikeManager _likeManager;
+    public PostController(IPostManager postManager, ILikeManager likeManager)
     {
         _postManager = postManager;
+        _likeManager = likeManager;
+
     }
 
     [HttpGet]
@@ -63,7 +67,7 @@ public class PostController : ControllerBase
     [Route("{id}/like")]
     async public Task<ActionResult<ReadPostDTO>> Like([FromBody] WriteLikeDTO writeLike, int id)
     {
-        var post = await _postManager.LikePost(id, writeLike);
+        var post = await _likeManager.LikePost(id, writeLike);
         return Ok(post);
     }
 

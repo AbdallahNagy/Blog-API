@@ -4,6 +4,10 @@ public class BusinessException : Exception
 {
     public int StatusCode { get; }
     public string? Details { get; }
+    public BusinessException()
+    {
+
+    }
     public BusinessException(int statusCode, string message) : base(message) => StatusCode = statusCode;
 
     public BusinessException(int statusCode, string message, string details) : base(message)

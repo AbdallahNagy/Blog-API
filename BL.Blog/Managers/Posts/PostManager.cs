@@ -1,10 +1,8 @@
-﻿using Blog.BL.DTOs.Likes;
-using Blog.BL.DTOs.Posts;
+﻿using Blog.BL.DTOs.Posts;
 using Blog.BL.DTOs.PostTags;
 using Blog.BL.DTOs.Tags;
 using Blog.BL.Exception_Handling;
 using Blog.DAL.Models;
-using Blog.DAL.Repos.Likes;
 using Blog.DAL.Repos.Posts;
 using Blog.DAL.Repos.PostTag;
 using Blog.DAL.Repos.Tags;
@@ -16,17 +14,14 @@ public class PostManager : IPostManager
     private readonly IPostRepo _postRepo;
     private readonly ITagRepo _tagRepo;
     private readonly IPostTagRepo _postTagRepo;
-    private readonly ILikeRepo _likeRepo;
 
-    public PostManager(IPostRepo postRepo, ITagRepo tagRepo, IPostTagRepo postsTags, ILikeRepo likeRepo)
+    public PostManager(IPostRepo postRepo, ITagRepo tagRepo, IPostTagRepo postsTags)
     {
         _postRepo = postRepo;
         _tagRepo = tagRepo;
         _postTagRepo = postsTags;
-        _likeRepo = likeRepo;
     }
-    // cant find post
-    // 
+
     async public Task<ReadPostDTO?> GetById(int id)
     {
         var post = await _postRepo.Get(id) ?? throw new BusinessException(404, "Can't find post by this id");
@@ -44,8 +39,8 @@ public class PostManager : IPostManager
                     t?.Id ?? 0,
                     t?.Name ?? "",
                     t?.CreatedAt ?? DateTime.MinValue)));
-        return readPost;
 
+        return readPost;
     }
 
     async public Task<ReadPostDTO> Add(WritePostDTO writePost)
@@ -197,34 +192,4 @@ public class PostManager : IPostManager
                     t?.CreatedAt ?? DateTime.MinValue)))).ToList();
     }
 
-    public async Task<ReadPostDTO?> LikePost(int id, WriteLikeDTO writeLike)
-    {
-        var like = new Like
-        {
-            PostId = id,
-            UserId = writeLike.UserId,
-        };
-
-        var createdLike = await _likeRepo.Add(like);
-        await _likeRepo.SaveChanges();
-
-        var post = await _postRepo.AddLikeToPost(id)
-            ?? throw new BusinessException(404, "Record doesn't exist");
-
-        await _postRepo.SaveChanges();
-
-        return new ReadPostDTO(
-            post.Id,
-            post.Title,
-            post.Body,
-            post.TotalLikes,
-            post.AuthorId,
-            post.CreatedAt,
-            post.PostsTags
-                .Select(pt => pt.Tag)
-                .Select(t => new ReadTagDTO(
-                    t?.Id ?? 0,
-                    t?.Name ?? "",
-                    t?.CreatedAt ?? DateTime.MinValue)));
-    }
 }
