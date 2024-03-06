@@ -26,6 +26,9 @@ public class PostManager : IPostManager
     {
         var post = await _postRepo.Get(id) ?? throw new BusinessException(404, "Can't find post by this id");
 
+        //var readPost = post.Adapt<ReadPostDTO>();
+        //readPost.Tags = post.PostsTags.Select(t => t.Tag).ToList();
+
         ReadPostDTO readPost = new(
             post.Id,
             post.Title,

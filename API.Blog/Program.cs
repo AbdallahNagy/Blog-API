@@ -1,6 +1,7 @@
 using Blog.API.Configurations;
 using Blog.API.Middlewares;
 using Blog.BL.Managers.Comments;
+using Blog.BL.Managers.Likes;
 using Blog.BL.Managers.Posts;
 using Blog.BL.Managers.Tags;
 using Blog.BL.Managers.Users;
@@ -50,6 +51,7 @@ builder.Services.AddScoped<IPostManager, PostManager>();
 builder.Services.AddScoped<ICommentManager, CommentManager>();
 builder.Services.AddScoped<ITagManager, TagManager>();
 builder.Services.AddScoped<IUserManager, BlogUserManager>();
+builder.Services.AddScoped<ILikeManager, LikeManager>();
 
 
 // Middlewares

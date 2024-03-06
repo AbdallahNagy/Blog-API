@@ -2,16 +2,13 @@
 using Blog.BL.Exception_Handling;
 using Blog.DAL.Models;
 using Blog.DAL.Repos.Comments;
-using EntityFramework.Exceptions.Common;
+using Mapster;
 
 namespace Blog.BL.Managers.Comments;
-public class CommentManager : ICommentManager
+public class CommentManager(ICommentRepo commentRepo) : ICommentManager
 {
-    private readonly ICommentRepo _commentRepo;
-    public CommentManager(ICommentRepo commentRepo)
-    {
-        _commentRepo = commentRepo;
-    }
+    private readonly ICommentRepo _commentRepo = commentRepo;
+
     async public Task<ReadCommentDTO> Add(WriteCommentDTO commentToAdd, int postId)
     {
         var comment = new Comment
@@ -21,12 +18,12 @@ public class CommentManager : ICommentManager
             PostId = postId
         };
 
-        var createdComment = await _commentRepo.Add(comment);
+        await _commentRepo.Add(comment);
         await _commentRepo.SaveChanges();
 
-        var readComment = new ReadCommentDTO(createdComment.Id, createdComment.Body, createdComment.CreatedAt, createdComment.UserId);
+        await Console.Out.WriteLineAsync(comment.Id.ToString());
 
-        return readComment;
+        return comment.Adapt<ReadCommentDTO>();
     }
 
     public async Task Delete(int id, int postId)
@@ -43,7 +40,7 @@ public class CommentManager : ICommentManager
         var comments = await _commentRepo.GetAllCommentsByPostId(postId)
             ?? throw new BusinessException(404, "No comments in this post");
 
-        return comments.Select(c => new ReadCommentDTO(c.Id, c.Body, c.CreatedAt, c.UserId));
+        return comments.Adapt<IEnumerable<ReadCommentDTO>>();
     }
 
     public async Task<ReadCommentDTO> Update(UpdateCommentDTO commentToUpdate, int id, int postId)
@@ -51,13 +48,12 @@ public class CommentManager : ICommentManager
         var comment = new Comment
         {
             Body = commentToUpdate.Body,
-
         };
 
         var updatedComment = await _commentRepo.Update(id, postId, comment)
             ?? throw new BusinessException(404, "Record doesn't exist");
 
         await _commentRepo.SaveChanges();
-        return new ReadCommentDTO(updatedComment.Id, updatedComment.Body, updatedComment.CreatedAt, updatedComment.UserId);
+        return updatedComment.Adapt<ReadCommentDTO>();
     }
 }

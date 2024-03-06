@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "zug8CY+Ezsc1P3i6rlgZV16JkV96gcUx9+hsZm5CKomGTwtWG4mwE+GVyAEnQzn3DemkFJa/YbP/XoH7aSxLmQ==",
+  "dgSpecHash": "sB9oHme6g9D4pddbW+ZY+/gCpiUA+AJJrs9JmtanMij18xyXoYwVWMAsZ3pMUqrkSyEwG0g5JXB7IvLR7sFvQg==",
   "success": true,
   "projectFilePath": "C:\\src dev\\Blog-API\\BL.Blog\\Blog.BL.csproj",
   "expectedPackageFiles": [
@@ -8,6 +8,8 @@
     "C:\\Users\\Abdallah Nagy\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
     "C:\\Users\\Abdallah Nagy\\.nuget\\packages\\entityframeworkcore.exceptions.common\\6.0.3\\entityframeworkcore.exceptions.common.6.0.3.nupkg.sha512",
     "C:\\Users\\Abdallah Nagy\\.nuget\\packages\\entityframeworkcore.exceptions.sqlserver\\6.0.3.2\\entityframeworkcore.exceptions.sqlserver.6.0.3.2.nupkg.sha512",
+    "C:\\Users\\Abdallah Nagy\\.nuget\\packages\\mapster\\7.4.0\\mapster.7.4.0.nupkg.sha512",
+    "C:\\Users\\Abdallah Nagy\\.nuget\\packages\\mapster.core\\1.2.1\\mapster.core.1.2.1.nupkg.sha512",
     "C:\\Users\\Abdallah Nagy\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\7.0.0\\microsoft.aspnetcore.cryptography.internal.7.0.0.nupkg.sha512",
     "C:\\Users\\Abdallah Nagy\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\7.0.0\\microsoft.aspnetcore.cryptography.keyderivation.7.0.0.nupkg.sha512",
     "C:\\Users\\Abdallah Nagy\\.nuget\\packages\\microsoft.aspnetcore.identity.entityframeworkcore\\7.0.0\\microsoft.aspnetcore.identity.entityframeworkcore.7.0.0.nupkg.sha512",
