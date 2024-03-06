@@ -13,7 +13,7 @@ namespace Blog.DAL.Migrations
 {
     [DbContext(typeof(BlogDbContext))]
     [Migration("20240306202256_refactor")]
-    partial class refactor
+    partial class Refactor
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

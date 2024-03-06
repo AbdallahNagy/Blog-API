@@ -165,3 +165,4 @@ C:\src dev\Blog-API\Blog.UnitTesting\bin\Debug\net8.0\Blog.BL.pdb
 C:\src dev\Blog-API\Blog.UnitTesting\bin\Debug\net8.0\Blog.DAL.pdb
 C:\src dev\Blog-API\Blog.UnitTesting\bin\Debug\net8.0\Mapster.dll
 C:\src dev\Blog-API\Blog.UnitTesting\bin\Debug\net8.0\Mapster.Core.dll
+C:\src dev\Blog-API\Blog.UnitTesting\bin\Debug\net8.0\Mapster.DependencyInjection.dll

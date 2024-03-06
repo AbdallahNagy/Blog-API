@@ -1,10 +1,10 @@
 ﻿using Blog.BL.DTOs.Likes;
 using Blog.BL.DTOs.Posts;
-using Blog.BL.DTOs.Tags;
 using Blog.BL.Exception_Handling;
 using Blog.DAL.Models;
 using Blog.DAL.Repos.Likes;
 using Blog.DAL.Repos.Posts;
+using MapsterMapper;
 
 namespace Blog.BL.Managers.Likes;
 
@@ -12,10 +12,12 @@ public class LikeManager : ILikeManager
 {
     private readonly ILikeRepo _likeRepo;
     private readonly IPostRepo _postRepo;
-    public LikeManager(ILikeRepo likeRepo, IPostRepo postRepo)
+    private readonly IMapper _mapper;
+    public LikeManager(ILikeRepo likeRepo, IPostRepo postRepo, IMapper mapper)
     {
         _likeRepo = likeRepo;
         _postRepo = postRepo;
+        _mapper = mapper;
     }
     public async Task<ReadPostDTO?> LikePost(int id, WriteLikeDTO writeLike)
     {
@@ -25,7 +27,7 @@ public class LikeManager : ILikeManager
             UserId = writeLike.UserId,
         };
 
-        var createdLike = await _likeRepo.Add(like);
+        await _likeRepo.Add(like);
         await _likeRepo.SaveChanges();
 
         var post = await _postRepo.AddLikeToPost(id)
@@ -33,18 +35,6 @@ public class LikeManager : ILikeManager
 
         await _postRepo.SaveChanges();
 
-        return new ReadPostDTO(
-            post.Id,
-            post.Title,
-            post.Body,
-            post.TotalLikes,
-            post.AuthorId,
-            post.CreatedAt,
-            post.PostsTags
-                .Select(pt => pt.Tag)
-                .Select(t => new ReadTagDTO(
-                    t?.Id ?? 0,
-                    t?.Name ?? "",
-                    t?.CreatedAt ?? DateTime.MinValue)));
+        return _mapper.Map<ReadPostDTO>(post);
     }
 }

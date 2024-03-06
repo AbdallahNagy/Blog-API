@@ -1,5 +1,6 @@
 using Blog.API.Configurations;
 using Blog.API.Middlewares;
+using Blog.BL.DTOs.Posts;
 using Blog.BL.Managers.Comments;
 using Blog.BL.Managers.Likes;
 using Blog.BL.Managers.Posts;
@@ -14,6 +15,8 @@ using Blog.DAL.Repos.PostTag;
 using Blog.DAL.Repos.RefreshTokens;
 using Blog.DAL.Repos.Tags;
 using Blog.DAL.Repos.Users;
+using Mapster;
+using MapsterMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -52,6 +55,15 @@ builder.Services.AddScoped<ICommentManager, CommentManager>();
 builder.Services.AddScoped<ITagManager, TagManager>();
 builder.Services.AddScoped<IUserManager, BlogUserManager>();
 builder.Services.AddScoped<ILikeManager, LikeManager>();
+
+// mapster registeration
+var config = new TypeAdapterConfig();
+
+config.NewConfig<Post, ReadPostDTO>()
+    .Map(dest => dest.Tags, src => src.PostsTags.Select(pt => pt.Tag));
+
+builder.Services.AddSingleton(config);
+builder.Services.AddScoped<IMapper, ServiceMapper>();
 
 
 // Middlewares

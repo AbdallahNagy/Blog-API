@@ -53,6 +53,10 @@
               "target": "Package",
               "version": "[7.4.0, )"
             },
+            "Mapster.DependencyInjection": {
+              "target": "Package",
+              "version": "[1.0.1, )"
+            },
             "Microsoft.AspNetCore.JsonPatch": {
               "target": "Package",
               "version": "[7.0.0, )"

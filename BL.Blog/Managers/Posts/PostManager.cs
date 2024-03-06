@@ -1,11 +1,11 @@
 ﻿using Blog.BL.DTOs.Posts;
 using Blog.BL.DTOs.PostTags;
-using Blog.BL.DTOs.Tags;
 using Blog.BL.Exception_Handling;
 using Blog.DAL.Models;
 using Blog.DAL.Repos.Posts;
 using Blog.DAL.Repos.PostTag;
 using Blog.DAL.Repos.Tags;
+using MapsterMapper;
 
 namespace Blog.BL.Managers.Posts;
 
@@ -14,36 +14,21 @@ public class PostManager : IPostManager
     private readonly IPostRepo _postRepo;
     private readonly ITagRepo _tagRepo;
     private readonly IPostTagRepo _postTagRepo;
+    private readonly IMapper _mapper;
 
-    public PostManager(IPostRepo postRepo, ITagRepo tagRepo, IPostTagRepo postsTags)
+    public PostManager(IPostRepo postRepo, ITagRepo tagRepo, IPostTagRepo postsTags, IMapper mapper)
     {
         _postRepo = postRepo;
         _tagRepo = tagRepo;
         _postTagRepo = postsTags;
+        _mapper = mapper;
     }
 
     async public Task<ReadPostDTO?> GetById(int id)
     {
         var post = await _postRepo.Get(id) ?? throw new BusinessException(404, "Can't find post by this id");
 
-        //var readPost = post.Adapt<ReadPostDTO>();
-        //readPost.Tags = post.PostsTags.Select(t => t.Tag).ToList();
-
-        ReadPostDTO readPost = new(
-            post.Id,
-            post.Title,
-            post.Body,
-            post.TotalLikes,
-            post.AuthorId,
-            post.CreatedAt,
-            post.PostsTags
-                .Select(pt => pt.Tag)
-                .Select(t => new ReadTagDTO(
-                    t?.Id ?? 0,
-                    t?.Name ?? "",
-                    t?.CreatedAt ?? DateTime.MinValue)));
-
-        return readPost;
+        return _mapper.Map<ReadPostDTO>(post);
     }
 
     async public Task<ReadPostDTO> Add(WritePostDTO writePost)
@@ -96,19 +81,7 @@ public class PostManager : IPostManager
         await _postTagRepo.AddRange(postsTags);
         await _postTagRepo.SaveChanges();
 
-        return new ReadPostDTO(
-            addedPost.Id,
-            addedPost.Title,
-            addedPost.Body,
-            addedPost.TotalLikes,
-            addedPost.AuthorId,
-            addedPost.CreatedAt,
-            addedPost.PostsTags
-                .Select(pt => pt.Tag)
-                .Select(t => new ReadTagDTO(
-                    t?.Id ?? 0,
-                    t?.Name ?? "",
-                    t?.CreatedAt ?? DateTime.MinValue)));
+        return _mapper.Map<ReadPostDTO>(addedPost);
     }
 
     async public Task Delete(int id)
@@ -159,19 +132,7 @@ public class PostManager : IPostManager
 
         var updatedPost = await _postRepo.Update(id, post) ?? throw new BusinessException(404, "Can't find record by the provided id");
         await _postRepo.SaveChanges();
-        return new ReadPostDTO(
-            updatedPost.Id,
-            updatedPost.Title,
-            updatedPost.Body,
-            updatedPost.TotalLikes,
-            updatedPost.AuthorId,
-            updatedPost.CreatedAt,
-            updatedPost.PostsTags
-                .Select(pt => pt.Tag)
-                .Select(t => new ReadTagDTO(
-                    t?.Id ?? 0,
-                    t?.Name ?? "",
-                    t?.CreatedAt ?? DateTime.MinValue)));
+        return _mapper.Map<ReadPostDTO>(updatedPost);
     }
 
     public async Task<List<ReadPostDTO>?> Filter(string title, string body, int tagId, int limit, int offset)
@@ -180,19 +141,6 @@ public class PostManager : IPostManager
 
         if (posts == null || posts.Count == 0) throw new BusinessException(404, "No posts available by this filter");
 
-        return posts.Select(post => new ReadPostDTO(
-            post.Id,
-            post.Title,
-            post.Body,
-            post.TotalLikes,
-            post.AuthorId,
-            post.CreatedAt,
-            post.PostsTags
-                .Select(pt => pt.Tag)
-                .Select(t => new ReadTagDTO(
-                    t?.Id ?? 0,
-                    t?.Name ?? "",
-                    t?.CreatedAt ?? DateTime.MinValue)))).ToList();
+        return _mapper.Map<List<ReadPostDTO>>(posts);
     }
-
 }
