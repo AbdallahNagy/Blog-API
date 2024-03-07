@@ -16,6 +16,31 @@ public class TagRepo : GenericRepo<Tag>, ITagRepo
     {
         return await _context.Set<Tag>().FirstOrDefaultAsync(t => t.Name == name);
     }
+    async public override Task<Tag> Add(Tag tag)
+    {
+        var existingTag = await GetByName(tag.Name);
+
+        if (existingTag == null)
+        {
+            await base.Add(tag);
+            return tag;
+        }
+        else
+        {
+            return existingTag;
+        }
+    }
+    async public new Task<IEnumerable<Tag>> AddRange(IEnumerable<Tag> tags)
+    {
+        var addedTags = new List<Tag>();
+        foreach (var tag in tags)
+        {
+            var addedTag = await Add(tag);
+            addedTags.Add(addedTag);
+        }
+
+        return addedTags;
+    }
     async public Task<IEnumerable<Tag?>?> GetTagsByPostId(int postId)
     {
         var postTags = await _context.Set<PostsTags>()

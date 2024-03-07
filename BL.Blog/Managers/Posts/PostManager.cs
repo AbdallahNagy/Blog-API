@@ -40,47 +40,23 @@ public class PostManager : IPostManager
             TotalLikes = 0,
         };
 
-        List<Tag>? tags = [];
-        var allTags = await _tagRepo.GetAll();
-        HashSet<string?>? tagNames = null;
+        await _postRepo.Add(post);
+        await _postRepo.SaveChanges();
 
-        if (allTags != null)
-        {
-            tagNames = allTags.Select(t => t.Name).ToHashSet();
-
-            foreach (var tag in writePost.Tags)
-            {
-                if (tagNames.Contains(tag.Name))
-                {
-                    var existingTag = await _tagRepo.GetByName(tag.Name ?? "");
-                    if (existingTag != null)
-                    {
-                        tags.Add(existingTag);
-                    }
-                }
-                else
-                {
-                    var newTag = await _tagRepo.Add(new Tag { Name = tag.Name });
-                    await _tagRepo.SaveChanges();
-
-                    tags.Add(newTag);
-                }
-            }
-        }
-
-        var addedPost = await _postRepo.Add(post);
+        var tags = _mapper.Map<IEnumerable<Tag>>(writePost.Tags).ToList();
+        await _tagRepo.AddRange(tags);
         await _postRepo.SaveChanges();
 
         var postsTags = tags.Select(t => new PostsTags
         {
-            PostId = addedPost.Id,
+            PostId = post.Id,
             TagId = t.Id
         });
 
         await _postTagRepo.AddRange(postsTags);
         await _postTagRepo.SaveChanges();
 
-        return _mapper.Map<ReadPostDTO>(addedPost);
+        return _mapper.Map<ReadPostDTO>(post);
     }
 
     async public Task Delete(int id)
@@ -107,13 +83,19 @@ public class PostManager : IPostManager
 
         foreach (var tagName in updatedTagsNames)
         {
-            if (!dbTagsNames.Contains(tagName))
+            if (!dbTagsNames.Contains(tagName!))
             {
                 var tag = await _tagRepo.GetByName(tagName!);
-                tag ??= await _tagRepo.Add(new Tag { Name = tagName });
-                await _tagRepo.SaveChanges();
 
-                var postTag = await _postTagRepo.Add(new PostsTags { PostId = id, TagId = tag.Id });
+                if (tag == null)
+                {
+                    tag = new Tag { Name = tagName! };
+                    await _tagRepo.Add(tag);
+                    await _tagRepo.SaveChanges();
+                }
+
+                var postTag = new PostsTags { PostId = id, TagId = tag.Id };
+                await _postTagRepo.Add(postTag);
                 await _postTagRepo.SaveChanges();
             }
         }

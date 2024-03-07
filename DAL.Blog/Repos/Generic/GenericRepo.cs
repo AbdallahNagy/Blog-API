@@ -18,12 +18,11 @@ public class GenericRepo<T> : IGenericRepo<T> where T : class
     {
         return await _context.Set<T>().FindAsync(id);
     }
-    async public Task<T> Add(T entity)
+    virtual async public Task Add(T entity)
     {
         await _context.Set<T>().AddAsync(entity);
-        return entity;
     }
-    async public Task AddRange(IEnumerable<T> entities)
+    virtual async public Task AddRange(IEnumerable<T> entities)
     {
         await _context.Set<T>().AddRangeAsync(entities);
     }
