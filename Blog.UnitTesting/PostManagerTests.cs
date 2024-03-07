@@ -1,4 +1,5 @@
 using Blog.BL.DTOs.Posts;
+using Blog.BL.DTOs.Tags;
 using Blog.BL.Exception_Handling;
 using Blog.BL.Managers.Posts;
 using Blog.DAL.Models;
@@ -72,7 +73,21 @@ namespace Blog.UnitTesting
                 ]
             };
 
+            var readPost = new ReadPostDTO
+            (
+                postId,
+                "Sample Title",
+                "Sample Body",
+                10,
+                "author123",
+                DateTime.Now,
+                [
+                    new ReadTagDTO(1, "tag1", DateTime.Now)
+                ]
+            );
+
             _postRepo.Setup(p => p.Get(It.IsAny<int>())).ReturnsAsync(post);
+            _mapper.Setup(m => m.Map<ReadPostDTO>(post)).Returns(readPost);
 
             // act
             var result = await _postManager.GetById(postId);

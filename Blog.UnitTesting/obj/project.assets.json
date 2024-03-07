@@ -4083,6 +4083,8 @@
     "net8.0": [
       "Blog.BL >= 1.0.0",
       "Blog.DAL >= 1.0.0",
+      "Mapster >= 7.4.0",
+      "Mapster.DependencyInjection >= 1.0.1",
       "Microsoft.NET.Test.Sdk >= 17.8.0",
       "Moq >= 4.20.70",
       "NUnit >= 3.14.0",
@@ -4142,6 +4144,14 @@
       "net8.0": {
         "targetAlias": "net8.0",
         "dependencies": {
+          "Mapster": {
+            "target": "Package",
+            "version": "[7.4.0, )"
+          },
+          "Mapster.DependencyInjection": {
+            "target": "Package",
+            "version": "[1.0.1, )"
+          },
           "Microsoft.NET.Test.Sdk": {
             "target": "Package",
             "version": "[17.8.0, )"

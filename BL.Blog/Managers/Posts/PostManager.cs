@@ -1,5 +1,4 @@
 ﻿using Blog.BL.DTOs.Posts;
-using Blog.BL.DTOs.PostTags;
 using Blog.BL.Exception_Handling;
 using Blog.DAL.Models;
 using Blog.DAL.Repos.Posts;
@@ -41,7 +40,7 @@ public class PostManager : IPostManager
             TotalLikes = 0,
         };
 
-        List<Tag>? tags = new();
+        List<Tag>? tags = [];
         var allTags = await _tagRepo.GetAll();
         HashSet<string?>? tagNames = null;
 
@@ -62,20 +61,20 @@ public class PostManager : IPostManager
                 else
                 {
                     var newTag = await _tagRepo.Add(new Tag { Name = tag.Name });
+                    await _tagRepo.SaveChanges();
+
                     tags.Add(newTag);
                 }
             }
-            await _tagRepo.SaveChanges();
         }
 
         var addedPost = await _postRepo.Add(post);
         await _postRepo.SaveChanges();
 
-        var postsTagsWrite = tags.Select(t => new WritePostTagsDTO(addedPost.Id, t.Id));
-        var postsTags = postsTagsWrite.Select(p => new PostsTags
+        var postsTags = tags.Select(t => new PostsTags
         {
-            PostId = p.PostID,
-            TagId = p.TagId
+            PostId = addedPost.Id,
+            TagId = t.Id
         });
 
         await _postTagRepo.AddRange(postsTags);
